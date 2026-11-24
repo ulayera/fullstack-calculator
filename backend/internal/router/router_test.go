@@ -44,12 +44,12 @@ func TestRouterReturnsNotFoundForUnknownRoute(t *testing.T) {
 	h.AssertNotCalled(t, "Get", mock.Anything)
 }
 
-func TestRouterRejectsNonGetOnHealthz(t *testing.T) {
+func TestRouterRejectsNonGetOnHealthzWithMethodNotAllowed(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	h := &healthHandlerMock{}
 
 	rec := serve(New(h), http.MethodPost, "/api/v1/healthz")
 
-	assert.Equal(t, http.StatusNotFound, rec.Code)
+	assert.Equal(t, http.StatusMethodNotAllowed, rec.Code)
 	h.AssertNotCalled(t, "Get", mock.Anything)
 }

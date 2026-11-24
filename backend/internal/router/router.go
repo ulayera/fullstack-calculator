@@ -8,6 +8,7 @@ type HealthHandler interface {
 
 func New(health HealthHandler) *gin.Engine {
 	r := gin.New()
+	r.HandleMethodNotAllowed = true
 	r.Use(gin.Logger(), gin.Recovery())
 	v1 := r.Group("/api/v1")
 	v1.GET("/healthz", health.Get)
