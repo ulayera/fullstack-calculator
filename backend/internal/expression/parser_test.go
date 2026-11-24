@@ -118,7 +118,7 @@ func TestParseRejectsInvalidExpressions(t *testing.T) {
 		"(2":      {"Unclosed '(' at position 1"},
 		"((2)":    {"Unclosed '(' at position 1"},
 		"2)":      {"Unmatched ')' at position 2"},
-		")2(":     {"Implicit multiplication is not allowed at position 2", "Implicit multiplication is not allowed at position 3", "Unmatched ')' at position 1", "Unclosed '(' at position 3"},
+		")2(":     {"Unmatched ')' at position 1", "Unclosed '(' at position 3", "Implicit multiplication is not allowed at position 2", "Implicit multiplication is not allowed at position 3"},
 		"(2))+(3": {"Unmatched ')' at position 4", "Unclosed '(' at position 6"},
 		"1..2*+3-": {
 			"Number '1..2' at position 1 has more than one decimal point",

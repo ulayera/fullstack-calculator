@@ -20,8 +20,8 @@ func validate(input string) ([]Token, []string) {
 		return nil, errs
 	}
 	errs = append(errs, checkNumbers(tokens)...)
-	errs = append(errs, checkSequence(tokens)...)
 	errs = append(errs, checkParentheses(tokens)...)
+	errs = append(errs, checkSequence(tokens)...)
 	return tokens, errs
 }
 
