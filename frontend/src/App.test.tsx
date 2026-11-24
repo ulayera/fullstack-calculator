@@ -1,45 +1,49 @@
-import { act, render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
+import { ServiceUnavailableError, type CalculatorApi } from './api/calculator'
 import type { FetchHealth } from './api/health'
 
+const api = (overrides: Partial<CalculatorApi> = {}): CalculatorApi => ({
+  validate: vi.fn<CalculatorApi['validate']>().mockResolvedValue({ valid: true }),
+  calculate: vi.fn<CalculatorApi['calculate']>(),
+  ...overrides,
+})
+
+const input = () => screen.getByRole('textbox', { name: 'expression' })
+
 describe('App', () => {
-  it('greets and shows the backend status once health resolves', async () => {
+  it('renders the calculator disabled until health resolves', async () => {
     const fetchHealth = vi.fn<FetchHealth>().mockResolvedValue({ status: 'ok' })
 
-    render(<App fetchHealth={fetchHealth} />)
+    render(<App api={api()} fetchHealth={fetchHealth} />)
 
-    expect(screen.getByRole('heading', { name: 'hello world!' })).toBeInTheDocument()
-    expect(await screen.findByText('status: ok')).toBeInTheDocument()
-    expect(fetchHealth).toHaveBeenCalledOnce()
+    expect(screen.getByRole('heading', { name: 'Calculator' })).toBeInTheDocument()
+    expect(input()).toBeDisabled()
+    await waitFor(() => expect(input()).toBeEnabled())
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
-  it('shows a checking state while health is pending', () => {
-    const fetchHealth = vi.fn<FetchHealth>().mockReturnValue(new Promise(() => {}))
+  it('keeps the calculator disabled with a message when health fails', async () => {
+    const fetchHealth = vi.fn<FetchHealth>().mockRejectedValue(new Error('down'))
 
-    render(<App fetchHealth={fetchHealth} />)
+    render(<App api={api()} fetchHealth={fetchHealth} />)
 
-    expect(screen.getByRole('status')).toHaveTextContent('status: checking...')
+    await waitFor(() => expect(fetchHealth).toHaveBeenCalled())
+    expect(input()).toBeDisabled()
+    expect(screen.getByRole('alert')).toHaveTextContent('Service unavailable momentarily')
   })
 
-  it('shows unavailable when health fails', async () => {
-    const fetchHealth = vi.fn<FetchHealth>().mockRejectedValue(new Error('boom'))
+  it('disables the calculator when an endpoint reports the service unavailable', async () => {
+    const fetchHealth = vi.fn<FetchHealth>().mockResolvedValue({ status: 'ok' })
+    const validate = vi.fn<CalculatorApi['validate']>().mockRejectedValue(new ServiceUnavailableError())
+    render(<App api={api({ validate })} fetchHealth={fetchHealth} />)
+    await waitFor(() => expect(input()).toBeEnabled())
 
-    render(<App fetchHealth={fetchHealth} />)
+    await userEvent.type(input(), '1')
 
-    expect(await screen.findByText('status: unavailable')).toBeInTheDocument()
-  })
-
-  it('ignores a stale health result when the health source changes', async () => {
-    let resolveStale: (value: { status: string }) => void = () => {}
-    const stale = vi.fn<FetchHealth>().mockReturnValue(new Promise((r) => (resolveStale = r)))
-    const fresh = vi.fn<FetchHealth>().mockResolvedValue({ status: 'fresh' })
-
-    const { rerender } = render(<App fetchHealth={stale} />)
-    rerender(<App fetchHealth={fresh} />)
-    await screen.findByText('status: fresh')
-    await act(async () => resolveStale({ status: 'stale' }))
-
-    expect(screen.getByRole('status')).toHaveTextContent('status: fresh')
+    await waitFor(() => expect(input()).toBeDisabled())
+    expect(screen.getByRole('alert')).toHaveTextContent('Service unavailable momentarily')
   })
 })

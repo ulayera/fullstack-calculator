@@ -1,31 +1,18 @@
-import { useEffect, useState } from 'react'
+import { calculatorApi, type CalculatorApi } from './api/calculator'
 import { fetchHealth as defaultFetchHealth, type FetchHealth } from './api/health'
+import { Calculator } from './components/Calculator'
+import { useHealth } from './hooks/useHealth'
 import './App.css'
 
-const LOADING = 'checking...'
-const UNAVAILABLE = 'unavailable'
+type AppProps = { api?: CalculatorApi; fetchHealth?: FetchHealth }
 
-type AppProps = { fetchHealth?: FetchHealth }
-
-export default function App({ fetchHealth = defaultFetchHealth }: AppProps) {
-  const [status, setStatus] = useState(LOADING)
-
-  useEffect(() => {
-    let active = true
-    fetchHealth()
-      .then((health) => active && setStatus(health.status))
-      .catch(() => active && setStatus(UNAVAILABLE))
-    return () => {
-      active = false
-    }
-  }, [fetchHealth])
+export default function App({ api = calculatorApi, fetchHealth = defaultFetchHealth }: AppProps) {
+  const { available, markUnavailable } = useHealth(fetchHealth)
 
   return (
     <main className="app">
-      <h1 className="app__title">hello world!</h1>
-      <p className="app__status" role="status" data-status={status}>
-        status: {status}
-      </p>
+      <h1 className="app__title">Calculator</h1>
+      <Calculator api={api} available={available} onUnavailable={markUnavailable} />
     </main>
   )
 }
