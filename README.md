@@ -24,7 +24,7 @@ docker compose up -d --build --wait
 open http://localhost:8080
 ```
 
-Set `APP_PORT` to use a port other than 8080.
+Set `APP_PORT` to use a port other than 8080. The frontend healthcheck goes through nginx to the backend, so it reports unhealthy while the backend is down.
 
 Development stack, with Vite and air reloading on file changes:
 
@@ -45,6 +45,8 @@ The OpenAPI spec is in [docs/openapi.yaml](docs/openapi.yaml).
 $ curl -s http://localhost:8080/api/v1/healthz
 {"status":"ok"}
 ```
+
+Unknown routes return 404 and wrong methods return 405.
 
 ## Tests and coverage
 
@@ -76,6 +78,7 @@ docker compose up -d --build --wait
 cd e2e
 npm ci
 npx playwright install webkit chromium
+npm run typecheck
 npx playwright test
 BASE_URL=http://localhost:5173 npx playwright test
 ```
