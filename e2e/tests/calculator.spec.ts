@@ -126,7 +126,7 @@ test.describe('calculator ui', () => {
     await expect(calc.input).toHaveValue('undefined')
     await page.screenshot({ path: shot('undefined'), fullPage: true })
 
-    await calc.press('*')
+    await calc.press('*)+')
     await expect(calc.input).toHaveValue('undefined')
     await calc.press('4')
     await expect(calc.input).toHaveValue('4')
