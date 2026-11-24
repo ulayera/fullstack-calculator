@@ -1,8 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import type { Calculation, CalculatorApi } from '../api/calculator'
-import { VALIDATE_DEBOUNCE_MS } from '../hooks/useValidation'
+import { describe, expect, it, vi } from 'vitest'
+import type { Calculation, CalculatorApi, Validation } from '../api/calculator'
 import { Calculator, UNAVAILABLE_MESSAGE } from './Calculator'
 
 const third = { kind: 'value', result: '0.3333333333333333', exact: '0.3333333333333333333333333333333333' } as const
@@ -14,18 +13,17 @@ const setup = ({ available = true, calculation = third as Calculation } = {}) =>
   }
   const onUnavailable = vi.fn()
   const user = userEvent.setup({ delay: null })
-  const view = render(<Calculator api={api} available={available} onUnavailable={onUnavailable} />)
+  const view = render(
+    <Calculator api={api} available={available} onUnavailable={onUnavailable} validateDebounceMs={0} />,
+  )
   const input = screen.getByRole<HTMLInputElement>('textbox', { name: 'expression' })
   const button = (name: string) => screen.getByRole('button', { name })
   return { api, onUnavailable, user, view, input, button }
 }
 
-const settle = () => act(() => vi.advanceTimersByTimeAsync(VALIDATE_DEBOUNCE_MS))
+const settle = () => act(() => new Promise((resolve) => setTimeout(resolve, 10)))
 
 describe('Calculator', () => {
-  beforeEach(() => vi.useFakeTimers({ shouldAdvanceTime: true }))
-  afterEach(() => vi.useRealTimers())
-
   describe('layout', () => {
     it('renders the input with clear, digit, operator and equals keys', () => {
       const { button } = setup()
@@ -162,12 +160,15 @@ describe('Calculator', () => {
   describe('validation', () => {
     it('keeps equals disabled while empty or pending and enables it once valid', async () => {
       const { user, input, button, api } = setup()
+      let accept: (validation: Validation) => void = () => {}
+      api.validate.mockReturnValue(new Promise((resolve) => (accept = resolve)))
       expect(button('equals')).toBeDisabled()
 
       await user.type(input, '4+5')
+      await settle()
       expect(button('equals')).toBeDisabled()
 
-      await settle()
+      await act(async () => accept({ valid: true }))
       expect(api.validate).toHaveBeenLastCalledWith('4+5', expect.any(AbortSignal))
       expect(button('equals')).toBeEnabled()
       expect(screen.queryByRole('alert')).not.toBeInTheDocument()

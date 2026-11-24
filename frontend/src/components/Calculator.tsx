@@ -9,7 +9,7 @@ import {
 import type { CalculatorApi } from '../api/calculator'
 import { continuesStored, expressionToSend, type StoredResult } from '../calculator/chain'
 import { change, insert, UNDEFINED, type Edit } from '../calculator/input'
-import { useValidation } from '../hooks/useValidation'
+import { useValidation, VALIDATE_DEBOUNCE_MS } from '../hooks/useValidation'
 import { ErrorFooter } from './ErrorFooter'
 import { Keypad } from './Keypad'
 
@@ -19,18 +19,30 @@ type CalculatorProps = {
   api: CalculatorApi
   available: boolean
   onUnavailable: () => void
+  validateDebounceMs?: number
 }
 
 const block = (e: SyntheticEvent) => e.preventDefault()
 
-export function Calculator({ api, available, onUnavailable }: CalculatorProps) {
+export function Calculator({
+  api,
+  available,
+  onUnavailable,
+  validateDebounceMs = VALIDATE_DEBOUNCE_MS,
+}: CalculatorProps) {
   const [value, setValue] = useState('')
   const [stored, setStored] = useState<StoredResult | null>(null)
   const [calculationErrors, setCalculationErrors] = useState<string[]>([])
   const [calculating, setCalculating] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const caretRef = useRef(0)
-  const validation = useValidation(api.validate, value, available, onUnavailable)
+  const validation = useValidation(
+    api.validate,
+    value,
+    available,
+    onUnavailable,
+    validateDebounceMs,
+  )
 
   useLayoutEffect(() => {
     inputRef.current?.setSelectionRange(caretRef.current, caretRef.current)

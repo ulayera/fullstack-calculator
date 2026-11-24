@@ -17,6 +17,7 @@ export function useValidation(
   expression: string,
   enabled: boolean,
   onUnavailable: () => void,
+  debounceMs = VALIDATE_DEBOUNCE_MS,
 ): ValidationState {
   const [outcome, setOutcome] = useState<Outcome | null>(null)
   const skip = !enabled || expression === '' || expression === UNDEFINED
@@ -31,12 +32,12 @@ export function useValidation(
           if (error instanceof ServiceUnavailableError) onUnavailable()
         },
       )
-    }, VALIDATE_DEBOUNCE_MS)
+    }, debounceMs)
     return () => {
       clearTimeout(timer)
       controller.abort()
     }
-  }, [validate, expression, skip, onUnavailable])
+  }, [validate, expression, skip, onUnavailable, debounceMs])
 
   if (skip) return { status: 'idle' }
   if (outcome?.expression !== expression) return { status: 'pending' }
