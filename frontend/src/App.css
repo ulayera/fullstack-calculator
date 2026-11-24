@@ -1,0 +1,31 @@
+.app {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: max(1rem, env(safe-area-inset-top)) max(1rem, env(safe-area-inset-right))
+    max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  text-align: center;
+}
+
+.app__title {
+  margin: 0;
+  font-size: clamp(2rem, 9vw, 3.5rem);
+  overflow-wrap: anywhere;
+}
+
+.app__status {
+  margin: 0;
+  font-size: clamp(1rem, 4.5vw, 1.25rem);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.app__status[data-status='ok'] {
+  color: #1a7f37;
+}
+
+.app__status[data-status='unavailable'] {
+  color: #cf222e;
+}
