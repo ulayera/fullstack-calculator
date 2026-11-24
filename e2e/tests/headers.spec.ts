@@ -12,7 +12,7 @@ test('nginx sends security headers on pages, assets and api', async ({ page, req
   const assets: string[] = []
   page.on('response', (r) => r.url().includes('/assets/') && assets.push(new URL(r.url()).pathname))
   await page.goto('/')
-  await expect(page.getByRole('status')).toHaveText('status: ok')
+  await expect(page.getByRole('textbox', { name: 'expression' })).toBeEnabled()
 
   for (const path of ['/', '/api/v1/healthz', ...assets]) {
     const headers = (await request.get(path)).headers()
