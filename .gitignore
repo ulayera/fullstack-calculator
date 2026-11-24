@@ -1,0 +1,9 @@
+tmp/
+node_modules/
+dist/
+coverage/
+*.out
+.env
+.DS_Store
+test-results/
+playwright-report/
