@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ulayera/fullstack-calculator/backend/internal/expression"
 	"github.com/ulayera/fullstack-calculator/backend/internal/handler"
 	"github.com/ulayera/fullstack-calculator/backend/internal/router"
 	"github.com/ulayera/fullstack-calculator/backend/internal/server"
@@ -29,7 +30,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	srv := server.New(router.New(handler.NewHealthHandler(service.NewHealthService())))
+	health := handler.NewHealthHandler(service.NewHealthService())
+	calculator := handler.NewCalculatorHandler(service.NewCalculatorService(expression.Parser{}))
+	srv := server.New(router.New(health, calculator))
 	log.Printf("listening on %s", ln.Addr())
 	if err := server.Run(ctx, srv, ln, 10*time.Second); err != nil {
 		log.Fatal(err)
