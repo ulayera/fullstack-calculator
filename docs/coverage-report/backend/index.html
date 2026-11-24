@@ -208,7 +208,22 @@ func (b Binary) Eval() (decimal.Decimal, error) {
         <span class="cov8" title="1">if right.IsZero() </span>{
                 <span class="cov8" title="1">return decimal.Decimal{}, ErrDivisionByZero
 </span>        }
-        <span class="cov8" title="1">return left.DivRound(right, DivisionPrecision), nil</span>
+        <span class="cov8" title="1">return left.DivRound(right, divisionPlaces(left, right)), nil</span>
+}
+
+func leadingExponent(d decimal.Decimal) int32 {
+        <span class="cov8" title="1">return int32(d.NumDigits()) + d.Exponent() - 1
+</span>}
+
+func divisionPlaces(left, right decimal.Decimal) int32 {
+        <span class="cov8" title="1">if left.IsZero() </span>{
+                <span class="cov8" title="1">return 0
+</span>        }
+        <span class="cov8" title="1">exponent := leadingExponent(left) - leadingExponent(right)
+        if right.Abs().Shift(exponent).Cmp(left.Abs()) &gt; 0 </span>{
+                <span class="cov8" title="1">exponent--
+</span>        }
+        <span class="cov8" title="1">return DivisionPrecision - 1 - exponent</span>
 }
 </pre>
 		
@@ -309,8 +324,8 @@ func validate(input string) ([]Token, []string) {
                 <span class="cov8" title="1">return nil, errs
 </span>        }
         <span class="cov8" title="1">errs = append(errs, checkNumbers(tokens)...)
-        errs = append(errs, checkSequence(tokens)...)
         errs = append(errs, checkParentheses(tokens)...)
+        errs = append(errs, checkSequence(tokens)...)
         return tokens, errs</span>
 }
 

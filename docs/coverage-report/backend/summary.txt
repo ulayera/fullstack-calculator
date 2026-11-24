@@ -3,6 +3,8 @@ github.com/ulayera/fullstack-calculator/backend/internal/expression/lexer.go:36:
 github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:21:		Eval			100.0%
 github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:29:		Eval			100.0%
 github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:43:		Eval			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:66:		leadingExponent		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:70:		divisionPlaces		100.0%
 github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:12:	Parse			100.0%
 github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:21:	accept			100.0%
 github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:35:	expression		100.0%
