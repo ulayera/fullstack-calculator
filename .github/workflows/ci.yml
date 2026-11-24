@@ -27,7 +27,11 @@ jobs:
       - run: test -z "$(gofmt -l .)"
       - run: go vet ./...
       - run: go test ./... -race -coverpkg=./internal/... -coverprofile=coverage.out
-      - run: go tool cover -func=coverage.out
+      - name: Enforce 100% coverage
+        run: |
+          go tool cover -func=coverage.out
+          total=$(go tool cover -func=coverage.out | awk '/^total:/ {print $3}')
+          [ "$total" = "100.0%" ] || { echo "coverage $total is below 100%"; exit 1; }
       - run: go build ./...
 
   frontend:
@@ -51,10 +55,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - run: npx --yes @redocly/cli@latest lint docs/openapi.yaml
+      - run: npx --yes @redocly/cli@2.83.0 lint docs/openapi.yaml
 
   e2e:
-    needs: [backend, frontend]
+    needs: [backend, frontend, openapi]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
