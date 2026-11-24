@@ -2,11 +2,12 @@ import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import type { Calculation, CalculatorApi, Validation } from '../api/calculator'
+import type { HealthState } from '../hooks/useHealth'
 import { Calculator, UNAVAILABLE_MESSAGE } from './Calculator'
 
 const third = { kind: 'value', result: '0.3333333333333333', exact: '0.3333333333333333333333333333333333' } as const
 
-const setup = ({ available = true, calculation = third as Calculation } = {}) => {
+const setup = ({ health = 'up' as HealthState, calculation = third as Calculation } = {}) => {
   const api = {
     validate: vi.fn<CalculatorApi['validate']>().mockResolvedValue({ valid: true }),
     calculate: vi.fn<CalculatorApi['calculate']>().mockResolvedValue(calculation),
@@ -14,7 +15,7 @@ const setup = ({ available = true, calculation = third as Calculation } = {}) =>
   const onUnavailable = vi.fn()
   const user = userEvent.setup({ delay: null })
   const view = render(
-    <Calculator api={api} available={available} onUnavailable={onUnavailable} validateDebounceMs={0} />,
+    <Calculator api={api} health={health} onUnavailable={onUnavailable} validateDebounceMs={0} />,
   )
   const input = screen.getByRole<HTMLInputElement>('textbox', { name: 'expression' })
   const button = (name: string) => screen.getByRole('button', { name })
@@ -346,7 +347,7 @@ describe('Calculator', () => {
       expect(ctx.input).toHaveValue('1+1')
     })
 
-    it('ignores equals while a calculation is in flight', async () => {
+    it('ignores equals and edits while a calculation is in flight', async () => {
       const ctx = setup()
       let finish: (c: Calculation) => void = () => {}
       ctx.api.calculate.mockReturnValue(new Promise((r) => (finish = r)))
@@ -355,6 +356,11 @@ describe('Calculator', () => {
       await ctx.user.click(ctx.button('equals'))
       expect(ctx.button('equals')).toBeDisabled()
       await ctx.user.keyboard('{Enter}')
+      await ctx.user.keyboard('9')
+      await ctx.user.click(ctx.button('plus'))
+      await ctx.user.click(ctx.button('clear'))
+      fireEvent.change(ctx.input, { target: { value: '1+' } })
+      expect(ctx.input).toHaveValue('1+1')
       await act(async () => finish({ kind: 'value', result: '2', exact: '2' }))
 
       expect(ctx.api.calculate).toHaveBeenCalledOnce()
@@ -362,9 +368,19 @@ describe('Calculator', () => {
     })
   })
 
+  describe('while health is unknown', () => {
+    it('disables the input and buttons without an outage message', () => {
+      setup({ health: 'unknown' })
+
+      expect(screen.getByRole('textbox', { name: 'expression' })).toBeDisabled()
+      for (const b of screen.getAllByRole('button')) expect(b).toBeDisabled()
+      expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+    })
+  })
+
   describe('when the service is unavailable', () => {
     it('disables the input and every button and shows the message', () => {
-      setup({ available: false })
+      setup({ health: 'down' })
 
       expect(screen.getByRole('textbox', { name: 'expression' })).toBeDisabled()
       for (const b of screen.getAllByRole('button')) expect(b).toBeDisabled()
@@ -372,10 +388,8 @@ describe('Calculator', () => {
     })
 
     it('does not validate', async () => {
-      const { api, view } = setup({ available: false })
-      view.rerender(
-        <Calculator api={api} available={false} onUnavailable={() => {}} />,
-      )
+      const { api, view } = setup({ health: 'down' })
+      view.rerender(<Calculator api={api} health="down" onUnavailable={() => {}} />)
       await settle()
 
       expect(api.validate).not.toHaveBeenCalled()

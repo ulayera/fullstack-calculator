@@ -7,12 +7,12 @@ import './App.css'
 type AppProps = { api?: CalculatorApi; fetchHealth?: FetchHealth }
 
 export default function App({ api = calculatorApi, fetchHealth = defaultFetchHealth }: AppProps) {
-  const { available, markUnavailable } = useHealth(fetchHealth)
+  const { health, markUnavailable } = useHealth(fetchHealth)
 
   return (
     <main className="app">
       <h1 className="app__title">Calculator</h1>
-      <Calculator api={api} available={available} onUnavailable={markUnavailable} />
+      <Calculator api={api} health={health} onUnavailable={markUnavailable} />
     </main>
   )
 }

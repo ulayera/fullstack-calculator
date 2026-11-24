@@ -9,6 +9,7 @@ import {
 import type { CalculatorApi } from '../api/calculator'
 import { continuesStored, expressionToSend, type StoredResult } from '../calculator/chain'
 import { change, insert, UNDEFINED, type Edit } from '../calculator/input'
+import type { HealthState } from '../hooks/useHealth'
 import { useValidation, VALIDATE_DEBOUNCE_MS } from '../hooks/useValidation'
 import { ErrorFooter } from './ErrorFooter'
 import { Keypad } from './Keypad'
@@ -17,7 +18,7 @@ export const UNAVAILABLE_MESSAGE = 'Service unavailable momentarily'
 
 type CalculatorProps = {
   api: CalculatorApi
-  available: boolean
+  health: HealthState
   onUnavailable: () => void
   validateDebounceMs?: number
 }
@@ -26,10 +27,11 @@ const block = (e: SyntheticEvent) => e.preventDefault()
 
 export function Calculator({
   api,
-  available,
+  health,
   onUnavailable,
   validateDebounceMs = VALIDATE_DEBOUNCE_MS,
 }: CalculatorProps) {
+  const available = health === 'up'
   const [value, setValue] = useState('')
   const [stored, setStored] = useState<StoredResult | null>(null)
   const [calculationErrors, setCalculationErrors] = useState<string[]>([])
@@ -56,6 +58,7 @@ export function Calculator({
   }
 
   const insertAtCaret = (text: string) => {
+    if (calculating) return
     const input = inputRef.current!
     const edit = insert(value, Number(input.selectionStart), Number(input.selectionEnd), text)
     if (edit) commit(edit)
@@ -95,13 +98,17 @@ export function Calculator({
   }
 
   const onChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (calculating) return
     const edit = change(value, e.target.value)
     if (edit) commit(edit)
   }
 
-  const clear = () => commit({ value: '', caret: 0 }, null)
+  const clear = () => {
+    if (!calculating) commit({ value: '', caret: 0 }, null)
+  }
 
-  const errors = !available
+  const errors =
+    health === 'down'
     ? [UNAVAILABLE_MESSAGE]
     : calculationErrors.length > 0
       ? calculationErrors

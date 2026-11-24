@@ -6,7 +6,7 @@ export const HEALTH_PATH = '/api/v1/healthz'
 export const HEALTH_TIMEOUT_MS = 5000
 
 const isHealth = (value: unknown): value is Health =>
-  typeof value === 'object' && value !== null && typeof (value as Health).status === 'string'
+  typeof value === 'object' && value !== null && (value as Health).status === 'ok'
 
 export const createFetchHealth =
   (http: typeof fetch = fetch, timeoutMs = HEALTH_TIMEOUT_MS): FetchHealth =>

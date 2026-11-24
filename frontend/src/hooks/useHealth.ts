@@ -3,8 +3,10 @@ import type { FetchHealth } from '../api/health'
 
 export const HEALTH_INTERVAL_MS = 3000
 
+export type HealthState = 'unknown' | 'up' | 'down'
+
 export function useHealth(fetchHealth: FetchHealth, intervalMs = HEALTH_INTERVAL_MS) {
-  const [available, setAvailable] = useState(false)
+  const [health, setHealth] = useState<HealthState>('unknown')
 
   useEffect(() => {
     let active = true
@@ -12,12 +14,12 @@ export function useHealth(fetchHealth: FetchHealth, intervalMs = HEALTH_INTERVAL
     const check = () =>
       fetchHealth()
         .then(
-          () => true,
-          () => false,
+          (): HealthState => 'up',
+          (): HealthState => 'down',
         )
-        .then((ok) => {
+        .then((state) => {
           if (!active) return
-          setAvailable(ok)
+          setHealth(state)
           timer = setTimeout(check, intervalMs)
         })
     check()
@@ -27,7 +29,7 @@ export function useHealth(fetchHealth: FetchHealth, intervalMs = HEALTH_INTERVAL
     }
   }, [fetchHealth, intervalMs])
 
-  const markUnavailable = useCallback(() => setAvailable(false), [])
+  const markUnavailable = useCallback(() => setHealth('down'), [])
 
-  return { available, markUnavailable }
+  return { health, markUnavailable }
 }

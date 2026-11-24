@@ -7,14 +7,14 @@ describe('useHealth', () => {
   beforeEach(() => vi.useFakeTimers())
   afterEach(() => vi.useRealTimers())
 
-  it('starts unavailable and becomes available once health resolves', async () => {
+  it('starts unknown and becomes up once health resolves', async () => {
     const fetchHealth = vi.fn<FetchHealth>().mockResolvedValue({ status: 'ok' })
 
     const { result } = renderHook(() => useHealth(fetchHealth, 1000))
 
-    expect(result.current.available).toBe(false)
+    expect(result.current.health).toBe('unknown')
     await act(async () => {})
-    expect(result.current.available).toBe(true)
+    expect(result.current.health).toBe('up')
   })
 
   it('polls on the interval and follows the latest result', async () => {
@@ -27,10 +27,10 @@ describe('useHealth', () => {
     await act(async () => {})
 
     await act(() => vi.advanceTimersByTimeAsync(1000))
-    expect(result.current.available).toBe(false)
+    expect(result.current.health).toBe('down')
 
     await act(() => vi.advanceTimersByTimeAsync(1000))
-    expect(result.current.available).toBe(true)
+    expect(result.current.health).toBe('up')
     expect(fetchHealth).toHaveBeenCalledTimes(3)
   })
 
@@ -40,10 +40,10 @@ describe('useHealth', () => {
     await act(async () => {})
 
     act(() => result.current.markUnavailable())
-    expect(result.current.available).toBe(false)
+    expect(result.current.health).toBe('down')
 
     await act(() => vi.advanceTimersByTimeAsync(1000))
-    expect(result.current.available).toBe(true)
+    expect(result.current.health).toBe('up')
   })
 
   it('stops polling and ignores late results after unmount', async () => {

@@ -5,8 +5,8 @@ export function ErrorFooter({ errors }: ErrorFooterProps) {
     <footer className="calculator__footer" aria-live="polite">
       {errors.length > 0 && (
         <ul className="calculator__errors" role="alert">
-          {errors.map((error) => (
-            <li key={error}>{error}</li>
+          {errors.map((error, index) => (
+            <li key={index}>{error}</li>
           ))}
         </ul>
       )}

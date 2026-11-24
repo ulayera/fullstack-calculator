@@ -21,6 +21,7 @@ describe('App', () => {
 
     expect(screen.getByRole('heading', { name: 'Calculator' })).toBeInTheDocument()
     expect(input()).toBeDisabled()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     await waitFor(() => expect(input()).toBeEnabled())
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })

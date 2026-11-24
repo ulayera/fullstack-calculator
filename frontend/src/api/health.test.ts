@@ -37,7 +37,7 @@ describe('createFetchHealth', () => {
     await expect(createFetchHealth(http, 10)()).rejects.toMatchObject({ name: 'TimeoutError' })
   })
 
-  it.each([[{ healthy: true }], [{ status: 200 }], [null], ['ok']])(
+  it.each([[{ healthy: true }], [{ status: 200 }], [{ status: 'degraded' }], [null], ['ok']])(
     'rejects an unexpected body %j',
     async (body) => {
       await expect(createFetchHealth(respond(body))()).rejects.toThrow(
