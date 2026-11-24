@@ -15,6 +15,12 @@ test.describe('health api', () => {
 
     expect(response.status()).toBe(404)
   })
+
+  test('wrong method on healthz returns 405', async ({ request }) => {
+    const response = await request.post('/api/v1/healthz')
+
+    expect(response.status()).toBe(405)
+  })
 })
 
 test.describe('hello world page', () => {

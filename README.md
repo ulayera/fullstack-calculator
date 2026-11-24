@@ -80,7 +80,7 @@ npm ci
 npx playwright install webkit chromium
 npm run typecheck
 npx playwright test
-BASE_URL=http://localhost:5173 npx playwright test
+SKIP_NGINX_CHECKS=1 BASE_URL=http://localhost:5173 npx playwright test
 ```
 
 Screenshots, traces and the HTML report are written to `tmp/e2e/`.
