@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import App from './App'
 import type { FetchHealth } from './api/health'
@@ -30,16 +30,16 @@ describe('App', () => {
     expect(await screen.findByText('status: unavailable')).toBeInTheDocument()
   })
 
-  it('ignores a health result that arrives after unmount', async () => {
-    let resolve: (value: { status: string }) => void = () => {}
-    const fetchHealth = vi.fn<FetchHealth>().mockReturnValue(new Promise((r) => (resolve = r)))
-    const errors = vi.spyOn(console, 'error')
+  it('ignores a stale health result when the health source changes', async () => {
+    let resolveStale: (value: { status: string }) => void = () => {}
+    const stale = vi.fn<FetchHealth>().mockReturnValue(new Promise((r) => (resolveStale = r)))
+    const fresh = vi.fn<FetchHealth>().mockResolvedValue({ status: 'fresh' })
 
-    const { unmount } = render(<App fetchHealth={fetchHealth} />)
-    unmount()
-    resolve({ status: 'ok' })
-    await Promise.resolve()
+    const { rerender } = render(<App fetchHealth={stale} />)
+    rerender(<App fetchHealth={fresh} />)
+    await screen.findByText('status: fresh')
+    await act(async () => resolveStale({ status: 'stale' }))
 
-    expect(errors).not.toHaveBeenCalled()
+    expect(screen.getByRole('status')).toHaveTextContent('status: fresh')
   })
 })
