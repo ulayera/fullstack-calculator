@@ -15,11 +15,12 @@ Layout:
 
 Validations:
 
-- Full expression Validations are made at backend, frontend uses /validate.
+- Full expression Validations are made at backend (250ms debounce), frontend uses /validate.
 - Some UI validations are made on frontend (pasting, characters, occurrences, etc)
 - Only V (sqrt),%,^ are added to allowed chars.
 - Power needs this validation: if (|b * log10(|a|)| > 100000) return error 422 error message: "power operation refused due to computation limit exceeded". keep the 100000 number configurable as .env var.
 - Binary operators can be used only once between operands.
+- Incomplete expressions (e.g: 3*) are validated live and show an error at footer.
 
 Operations behaviors:
 
@@ -59,9 +60,9 @@ Rounding:
 
 API contract:
 - POST /api/v1/calculate
-    - 422 { "errors": ["Error"] } (for computation limit)
+    - new: 422 { "errors": ["Error"] } (for computation limit)
 - POST /api/v1/validate
-    - 422 { "errors": ["Error"] } (for computation limit)
+    - new: 422 { "errors": ["Error"] } (for computation limit)
 - uses the existing endpoints, request, response and status codes.
 
 Coder notes:
