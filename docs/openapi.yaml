@@ -1,0 +1,32 @@
+openapi: 3.1.0
+info:
+  title: Fullstack Calculator API
+  version: 0.1.0
+  description: REST API for the fullstack calculator.
+security: []
+servers:
+  - url: /api/v1
+paths:
+  /healthz:
+    get:
+      operationId: getHealth
+      summary: Liveness check
+      tags: [health]
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Health"
+              example:
+                status: ok
+components:
+  schemas:
+    Health:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          example: ok
