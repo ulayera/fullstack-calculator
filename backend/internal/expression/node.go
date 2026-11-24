@@ -60,5 +60,20 @@ func (b Binary) Eval() (decimal.Decimal, error) {
 	if right.IsZero() {
 		return decimal.Decimal{}, ErrDivisionByZero
 	}
-	return left.DivRound(right, DivisionPrecision), nil
+	return left.DivRound(right, divisionPlaces(left, right)), nil
+}
+
+func leadingExponent(d decimal.Decimal) int32 {
+	return int32(d.NumDigits()) + d.Exponent() - 1
+}
+
+func divisionPlaces(left, right decimal.Decimal) int32 {
+	if left.IsZero() {
+		return 0
+	}
+	exponent := leadingExponent(left) - leadingExponent(right)
+	if right.Abs().Shift(exponent).Cmp(left.Abs()) > 0 {
+		exponent--
+	}
+	return DivisionPrecision - 1 - exponent
 }
