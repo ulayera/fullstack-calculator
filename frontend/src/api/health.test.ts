@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { HEALTH_PATH, createFetchHealth } from './health'
+import { createFetchHealth } from './health'
 
 const respond = (body: unknown, status = 200) =>
   vi.fn<typeof fetch>().mockResolvedValue(new Response(JSON.stringify(body), { status }))
@@ -9,7 +9,7 @@ describe('createFetchHealth', () => {
     const http = respond({ status: 'ok' })
 
     await expect(createFetchHealth(http)()).resolves.toEqual({ status: 'ok' })
-    expect(http).toHaveBeenCalledExactlyOnceWith(HEALTH_PATH, {
+    expect(http).toHaveBeenCalledExactlyOnceWith('/api/v1/healthz', {
       signal: expect.any(AbortSignal),
     })
   })
