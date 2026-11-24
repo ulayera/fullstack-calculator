@@ -4,7 +4,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 FROM base AS dev
-RUN go install github.com/air-verse/air@latest
+RUN go install github.com/air-verse/air@v1.67.4
 CMD ["air", "--build.cmd", "go build -o ./tmp/server ./cmd/server", "--build.entrypoint", "./tmp/server", "--build.exclude_dir", "tmp", "--build.poll", "true"]
 
 FROM base AS build
