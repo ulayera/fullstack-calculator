@@ -4,6 +4,7 @@ export type Edit = { value: string; caret: number }
 
 const ALLOWED = /^[0-9.+\-*/()]+$/
 const DIGIT = /^[0-9]$/
+const STARTS_FRESH = /^[0-9.(-]/
 const BINARY_NON_MINUS = new Set(['+', '*', '/'])
 
 export const countViolations = (value: string): number => {
@@ -49,6 +50,7 @@ export const countViolations = (value: string): number => {
 }
 
 export const insert = (value: string, start: number, end: number, text: string): Edit | null => {
+  if (value === UNDEFINED && !STARTS_FRESH.test(text)) return null
   const [base, from, to] = value === UNDEFINED ? ['', 0, 0] : [value, start, end]
   const next = base.slice(0, from) + text + base.slice(to)
   if (!ALLOWED.test(text) || countViolations(next) > countViolations(base)) return null

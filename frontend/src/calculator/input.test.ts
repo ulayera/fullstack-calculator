@@ -94,6 +94,10 @@ describe('insert', () => {
     expect(insert('undefined', 9, 9, '7')).toEqual({ value: '7', caret: 1 })
     expect(insert('undefined', 0, 9, '-')).toEqual({ value: '-', caret: 1 })
     expect(insert('undefined', 9, 9, '*')).toBeNull()
+    expect(insert('undefined', 9, 9, ')')).toBeNull()
+    expect(insert('undefined', 9, 9, '+')).toBeNull()
+    expect(insert('undefined', 9, 9, '.')).toEqual({ value: '.', caret: 1 })
+    expect(insert('undefined', 9, 9, '(')).toEqual({ value: '(', caret: 1 })
   })
 })
 
