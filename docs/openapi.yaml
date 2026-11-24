@@ -12,7 +12,7 @@ info:
     multiplication such as `2(3)` is rejected. Numbers may start with a
     period (`.5`) but may not end with one (`5.`).
 
-    Division keeps 34 decimal places internally. The final result is rounded
+    Division keeps 34 significant digits internally. The final result is rounded
     once to 16 decimal places, half away from zero, with trailing zeros
     stripped.
 security: []

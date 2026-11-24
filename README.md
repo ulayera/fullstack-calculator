@@ -47,10 +47,10 @@ Without Docker, run `go run ./cmd/server` in `backend/` and `npm install && npm 
 - Keyboard and buttons insert at the caret and follow the same rules. Deletions always go through.
 - Each change is validated by `POST /validate` after a 250ms debounce. Broken rules show in the footer, and `=` (or Enter) is enabled only once the backend says the current expression is valid.
 - Precedence from highest to lowest: parentheses, unary minus, `* /`, `+ -`. Implicit multiplication like `2(3)` is rejected.
-- Division keeps 34 decimal places. The final result is rounded once to 16 places, half away from zero, with trailing zeros stripped. `1/3*3 = 1`, `0.1+0.2 = 0.3`.
-- Division by zero shows `undefined`. The next digit, `.`, `(` or `-` starts fresh; other operators are ignored.
+- Division keeps 34 significant digits. The final result is rounded once to 16 places, half away from zero, with trailing zeros stripped. `1/3*3 = 1`, `0.1+0.2 = 0.3`.
+- Division by zero shows `undefined`. The next digit, `.`, `(` or `-` starts fresh; `+ * / )` are ignored.
 - `=` replaces the input with the result and remembers its exact value. If the input still starts with that untouched result followed by an operator, the exact value is sent instead, so `1/3 = *3 =` gives `1`. Editing the result digits or pressing clear drops it.
-- The frontend polls `/healthz` every 3s. A failed health check, a timed out request (5s) or a 5xx response disables the input and buttons with "Service unavailable momentarily" until health returns 200.
+- The frontend polls `/healthz` every 3s and keeps the controls disabled until the first check passes. A failed health check, a timed out request (5s) or a 5xx response disables the input and buttons with "Service unavailable momentarily" until health returns 200.
 
 ## API
 
