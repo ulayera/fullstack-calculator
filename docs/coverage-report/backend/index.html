@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>expression: Go Coverage Report</title>
+		<title>config: Go Coverage Report</title>
 		<style>
 			body {
 				background: black;
@@ -55,25 +55,29 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">github.com/ulayera/fullstack-calculator/backend/internal/expression/lexer.go (100.0%)</option>
+				<option value="file0">github.com/ulayera/fullstack-calculator/backend/internal/config/config.go (100.0%)</option>
 				
-				<option value="file1">github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go (100.0%)</option>
+				<option value="file1">github.com/ulayera/fullstack-calculator/backend/internal/expression/lexer.go (100.0%)</option>
 				
-				<option value="file2">github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go (100.0%)</option>
+				<option value="file2">github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go (100.0%)</option>
 				
-				<option value="file3">github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go (100.0%)</option>
+				<option value="file3">github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go (100.0%)</option>
 				
-				<option value="file4">github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go (100.0%)</option>
+				<option value="file4">github.com/ulayera/fullstack-calculator/backend/internal/expression/power.go (100.0%)</option>
 				
-				<option value="file5">github.com/ulayera/fullstack-calculator/backend/internal/handler/health.go (100.0%)</option>
+				<option value="file5">github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go (100.0%)</option>
 				
-				<option value="file6">github.com/ulayera/fullstack-calculator/backend/internal/router/router.go (100.0%)</option>
+				<option value="file6">github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go (100.0%)</option>
 				
-				<option value="file7">github.com/ulayera/fullstack-calculator/backend/internal/server/server.go (100.0%)</option>
+				<option value="file7">github.com/ulayera/fullstack-calculator/backend/internal/handler/health.go (100.0%)</option>
 				
-				<option value="file8">github.com/ulayera/fullstack-calculator/backend/internal/service/calculator.go (100.0%)</option>
+				<option value="file8">github.com/ulayera/fullstack-calculator/backend/internal/router/router.go (100.0%)</option>
 				
-				<option value="file9">github.com/ulayera/fullstack-calculator/backend/internal/service/health.go (100.0%)</option>
+				<option value="file9">github.com/ulayera/fullstack-calculator/backend/internal/server/server.go (100.0%)</option>
+				
+				<option value="file10">github.com/ulayera/fullstack-calculator/backend/internal/service/calculator.go (100.0%)</option>
+				
+				<option value="file11">github.com/ulayera/fullstack-calculator/backend/internal/service/health.go (100.0%)</option>
 				
 				</select>
 			</div>
@@ -87,7 +91,33 @@
 		</div>
 		<div id="content">
 		
-		<pre class="file" id="file0" style="display: none">package expression
+		<pre class="file" id="file0" style="display: none">package config
+
+import (
+        "fmt"
+        "strconv"
+
+        "github.com/ulayera/fullstack-calculator/backend/internal/expression"
+)
+
+const PowerLimitVar = "POWER_LIMIT"
+
+type Lookup func(key string) (string, bool)
+
+func PowerLimit(lookup Lookup) (int64, error) {
+        <span class="cov8" title="1">raw, ok := lookup(PowerLimitVar)
+        if !ok || raw == "" </span>{
+                <span class="cov8" title="1">return expression.DefaultPowerLimit, nil
+</span>        }
+        <span class="cov8" title="1">limit, err := strconv.ParseInt(raw, 10, 64)
+        if err != nil || limit &lt;= 0 </span>{
+                <span class="cov8" title="1">return 0, fmt.Errorf("%s must be a positive integer, got %q", PowerLimitVar, raw)
+</span>        }
+        <span class="cov8" title="1">return limit, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package expression
 
 import "fmt"
 
@@ -101,6 +131,9 @@ const (
         Slash
         LParen
         RParen
+        Caret
+        Percent
+        Root
 )
 
 type Token struct {
@@ -116,6 +149,10 @@ var symbols = map[rune]Kind{
         '/': Slash,
         '(': LParen,
         ')': RParen,
+        '^': Caret,
+        '%': Percent,
+        '√': Root,
+        'V': Root,
 }
 
 func isNumberRune(r rune) bool {
@@ -146,7 +183,7 @@ func Lex(input string) ([]Token, []string) {
 }
 </pre>
 		
-		<pre class="file" id="file1" style="display: none">package expression
+		<pre class="file" id="file2" style="display: none">package expression
 
 import (
         "errors"
@@ -156,7 +193,21 @@ import (
 
 const DivisionPrecision = 34
 
-var ErrDivisionByZero = errors.New("division by zero")
+var (
+        ErrDivisionByZero = errors.New("division by zero")
+        one               = decimal.NewFromInt(1)
+)
+
+type Unprocessable string
+
+func (u Unprocessable) Error() string {
+        <span class="cov8" title="1">return string(u)
+</span>}
+
+const (
+        ErrImaginary  Unprocessable = "imaginary numbers not supported"
+        ErrPowerLimit Unprocessable = "power operation refused due to computation limit exceeded"
+)
 
 type Node interface {
         Eval() (decimal.Decimal, error)
@@ -204,7 +255,31 @@ func (b Binary) Eval() (decimal.Decimal, error) {
                 <span class="cov8" title="1">return left.Sub(right), nil</span>
         case Star:
                 <span class="cov8" title="1">return left.Mul(right), nil</span>
+        case Percent:
+                <span class="cov8" title="1">return left.Mul(right).Shift(-2), nil</span>
         }
+        <span class="cov8" title="1">return divide(left, right)</span>
+}
+
+type SquareRoot struct {
+        Operand Node
+}
+
+func (s SquareRoot) Eval() (decimal.Decimal, error) {
+        <span class="cov8" title="1">v, err := s.Operand.Eval()
+        if err != nil </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, err
+</span>        }
+        <span class="cov8" title="1">if v.IsNegative() </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrImaginary
+</span>        }
+        <span class="cov8" title="1">if v.IsZero() </span>{
+                <span class="cov8" title="1">return v, nil
+</span>        }
+        <span class="cov8" title="1">return v.SqrtRound(DivisionPrecision - 1 - leadingExponent(v)&gt;&gt;1)</span>
+}
+
+func divide(left, right decimal.Decimal) (decimal.Decimal, error) {
         <span class="cov8" title="1">if right.IsZero() </span>{
                 <span class="cov8" title="1">return decimal.Decimal{}, ErrDivisionByZero
 </span>        }
@@ -227,23 +302,26 @@ func divisionPlaces(left, right decimal.Decimal) int32 {
 }
 </pre>
 		
-		<pre class="file" id="file2" style="display: none">package expression
+		<pre class="file" id="file3" style="display: none">package expression
 
 import "github.com/shopspring/decimal"
 
 type descent struct {
-        tokens []Token
-        pos    int
+        tokens     []Token
+        pos        int
+        powerLimit int64
 }
 
-type Parser struct{}
+type Parser struct {
+        PowerLimit int64
+}
 
-func (Parser) Parse(input string) (Node, []string) {
+func (parser Parser) Parse(input string) (Node, []string) {
         <span class="cov8" title="1">tokens, errs := validate(input)
         if len(errs) &gt; 0 </span>{
                 <span class="cov8" title="1">return nil, errs
 </span>        }
-        <span class="cov8" title="1">p := &amp;descent{tokens: tokens}
+        <span class="cov8" title="1">p := &amp;descent{tokens: tokens, powerLimit: parser.PowerLimit}
         return p.expression(), nil</span>
 }
 
@@ -275,7 +353,7 @@ func (p *descent) expression() Node {
 func (p *descent) term() Node {
         <span class="cov8" title="1">left := p.unary()
         for </span>{
-                <span class="cov8" title="1">op, ok := p.accept(Star, Slash)
+                <span class="cov8" title="1">op, ok := p.accept(Star, Slash, Percent)
                 if !ok </span>{
                         <span class="cov8" title="1">return left
 </span>                }
@@ -287,7 +365,18 @@ func (p *descent) unary() Node {
         <span class="cov8" title="1">if _, ok := p.accept(Minus); ok </span>{
                 <span class="cov8" title="1">return Negate{Operand: p.unary()}
 </span>        }
-        <span class="cov8" title="1">return p.primary()</span>
+        <span class="cov8" title="1">if _, ok := p.accept(Root); ok </span>{
+                <span class="cov8" title="1">return SquareRoot{Operand: p.unary()}
+</span>        }
+        <span class="cov8" title="1">return p.power()</span>
+}
+
+func (p *descent) power() Node {
+        <span class="cov8" title="1">base := p.primary()
+        if _, ok := p.accept(Caret); ok </span>{
+                <span class="cov8" title="1">return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit}
+</span>        }
+        <span class="cov8" title="1">return base</span>
 }
 
 func (p *descent) primary() Node {
@@ -302,7 +391,117 @@ func (p *descent) primary() Node {
 }
 </pre>
 		
-		<pre class="file" id="file3" style="display: none">package expression
+		<pre class="file" id="file4" style="display: none">package expression
+
+import (
+        "math"
+        "strconv"
+
+        "github.com/shopspring/decimal"
+)
+
+const (
+        DefaultPowerLimit = 100000
+        mantissaDigits    = 17
+        reciprocalGuard   = 10
+)
+
+var nearOne = decimal.New(1, -2)
+
+type Power struct {
+        Base     Node
+        Exponent Node
+        Limit    int64
+}
+
+func (p Power) Eval() (decimal.Decimal, error) {
+        <span class="cov8" title="1">base, err := p.Base.Eval()
+        if err != nil </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, err
+</span>        }
+        <span class="cov8" title="1">exponent, err := p.Exponent.Eval()
+        if err != nil </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, err
+</span>        }
+        <span class="cov8" title="1">return power(base, exponent, p.Limit)</span>
+}
+
+func power(base, exponent decimal.Decimal, limit int64) (decimal.Decimal, error) {
+        <span class="cov8" title="1">switch </span>{
+        case exponent.IsZero():
+                <span class="cov8" title="1">return one, nil</span>
+        case base.IsZero() &amp;&amp; exponent.IsNegative():
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrDivisionByZero</span>
+        case base.IsZero():
+                <span class="cov8" title="1">return base, nil</span>
+        case base.IsNegative() &amp;&amp; !exponent.IsInteger():
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrImaginary</span>
+        }
+        <span class="cov8" title="1">magnitude := log10Power(base, exponent)
+        if math.Abs(magnitude) &gt; float64(limit) </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
+</span>        }
+        <span class="cov8" title="1">if !exponent.IsInteger() || exponent.IsNegative() </span>{
+                <span class="cov8" title="1">v, err := base.PowWithPrecision(exponent, significantPlaces(magnitude, 1))
+                if err != nil </span>{
+                        <span class="cov8" title="1">return decimal.Decimal{}, err
+</span>                }
+                <span class="cov8" title="1">return v.Round(DivisionPrecision - 1 - leadingExponent(v)), nil</span>
+        }
+        <span class="cov8" title="1">if exactWithin(base, exponent, limit) </span>{
+                <span class="cov8" title="1">return base.PowBigInt(exponent.BigInt())
+</span>        }
+        <span class="cov8" title="1">inverse, err := base.PowWithPrecision(exponent.Neg(), significantPlaces(-magnitude, reciprocalGuard))
+        if err != nil </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, err
+</span>        }
+        <span class="cov8" title="1">return divide(one, inverse)</span>
+}
+
+func significantPlaces(magnitude float64, guard int32) int32 {
+        <span class="cov8" title="1">return DivisionPrecision - 1 + guard - int32(math.Floor(magnitude))
+</span>}
+
+func exactWithin(base, exponent decimal.Decimal, limit int64) bool {
+        <span class="cov8" title="1">digits := int64(base.NumDigits()) + int64(math.Abs(float64(base.Exponent())))
+        return exponent.Mul(decimal.NewFromInt(digits)).LessThanOrEqual(decimal.NewFromInt(limit))
+</span>}
+
+func log10Power(base, exponent decimal.Decimal) float64 {
+        <span class="cov8" title="1">sign := float64(exponent.Sign())
+        if base.Abs().LessThan(one) </span>{
+                <span class="cov8" title="1">sign = -sign
+</span>        }
+        <span class="cov8" title="1">return sign * math.Pow(10, log10Abs(exponent)+log10Log10Abs(base))</span>
+}
+
+func log10Log10Abs(d decimal.Decimal) float64 {
+        <span class="cov8" title="1">abs := d.Abs()
+        distance := abs.Sub(one)
+        if distance.IsZero() </span>{
+                <span class="cov8" title="1">return math.Inf(-1)
+</span>        }
+        <span class="cov8" title="1">if distance.Abs().GreaterThanOrEqual(nearOne) </span>{
+                <span class="cov8" title="1">return math.Log10(math.Abs(log10Abs(abs)))
+</span>        }
+        <span class="cov8" title="1">ratio := 1.0
+        if t := distance.InexactFloat64(); t != 0 </span>{
+                <span class="cov8" title="1">ratio = math.Log1p(t) / t
+</span>        }
+        <span class="cov8" title="1">return log10Abs(distance) + math.Log10(ratio/math.Ln10)</span>
+}
+
+func log10Abs(d decimal.Decimal) float64 {
+        <span class="cov8" title="1">digits := d.Coefficient()
+        digits.Abs(digits)
+        text := digits.String()
+        lead := float64(len(text)-1) + float64(d.Exponent())
+        mantissa, _ := strconv.ParseFloat(text[:1]+"."+text[1:min(len(text), mantissaDigits)], 64)
+        return lead + math.Log10(mantissa)
+</span>}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package expression
 
 import (
         "fmt"
@@ -329,12 +528,16 @@ func validate(input string) ([]Token, []string) {
         return tokens, errs</span>
 }
 
-func isOperator(k Kind) bool {
-        <span class="cov8" title="1">return k == Plus || k == Minus || k == Star || k == Slash
+func isBinary(k Kind) bool {
+        <span class="cov8" title="1">return k == Plus || k == Minus || k == Star || k == Slash || k == Caret || k == Percent
+</span>}
+
+func needsOperand(k Kind) bool {
+        <span class="cov8" title="1">return isBinary(k) || k == Root
 </span>}
 
 func expectsOperand(prev *Token) bool {
-        <span class="cov8" title="1">return prev == nil || prev.Kind == LParen || isOperator(prev.Kind)
+        <span class="cov8" title="1">return prev == nil || prev.Kind == LParen || needsOperand(prev.Kind)
 </span>}
 
 func checkNumbers(tokens []Token) []string {
@@ -361,14 +564,14 @@ func checkSequence(tokens []Token) []string {
                 <span class="cov8" title="1">t := &amp;tokens[i]
                 isSign := false
                 switch t.Kind </span>{
-                case Number, LParen:
+                case Number, LParen, Root:
                         <span class="cov8" title="1">if !expectsOperand(prev) </span>{
                                 <span class="cov8" title="1">errs = append(errs, fmt.Sprintf("Implicit multiplication is not allowed at position %d", t.Pos))
 </span>                        }
                 case RParen:
                         <span class="cov8" title="1">if prev != nil &amp;&amp; prev.Kind == LParen </span>{
                                 <span class="cov8" title="1">errs = append(errs, fmt.Sprintf("Empty parentheses at position %d", prev.Pos))
-</span>                        } else <span class="cov8" title="1">if prev != nil &amp;&amp; isOperator(prev.Kind) </span>{
+</span>                        } else <span class="cov8" title="1">if prev != nil &amp;&amp; needsOperand(prev.Kind) </span>{
                                 <span class="cov8" title="1">errs = append(errs, fmt.Sprintf("Missing operand after '%s' at position %d", prev.Text, prev.Pos))
 </span>                        }
                 case Minus:
@@ -384,7 +587,7 @@ func checkSequence(tokens []Token) []string {
                 <span class="cov8" title="1">prevIsSign = isSign
                 prev = t</span>
         }
-        <span class="cov8" title="1">if prev != nil &amp;&amp; isOperator(prev.Kind) </span>{
+        <span class="cov8" title="1">if prev != nil &amp;&amp; needsOperand(prev.Kind) </span>{
                 <span class="cov8" title="1">errs = append(errs, fmt.Sprintf("Incomplete expression: missing operand after '%s' at position %d", prev.Text, prev.Pos))
 </span>        }
         <span class="cov8" title="1">return errs</span>
@@ -412,18 +615,21 @@ func checkParentheses(tokens []Token) []string {
 }
 </pre>
 		
-		<pre class="file" id="file4" style="display: none">package handler
+		<pre class="file" id="file6" style="display: none">package handler
 
 import (
+        "errors"
         "net/http"
 
         "github.com/gin-gonic/gin"
+        "github.com/ulayera/fullstack-calculator/backend/internal/expression"
         "github.com/ulayera/fullstack-calculator/backend/internal/service"
 )
 
 const (
         MaxBodyBytes   = 64 &lt;&lt; 10
         InvalidBodyMsg = "Request body must be a JSON object with a string 'expression'"
+        InternalMsg    = "Internal error"
         Ok             = "Ok"
 )
 
@@ -453,14 +659,29 @@ func bindExpression(c *gin.Context) (string, bool) {
         <span class="cov8" title="1">return *req.Expression, true</span>
 }
 
+func respondFailure(c *gin.Context, errs []string, err error) bool {
+        <span class="cov8" title="1">var unprocessable expression.Unprocessable
+        switch </span>{
+        case errors.As(err, &amp;unprocessable):
+                <span class="cov8" title="1">c.JSON(http.StatusUnprocessableEntity, errorsResponse{Errors: []string{unprocessable.Error()}})</span>
+        case err != nil:
+                <span class="cov8" title="1">_ = c.Error(err)
+                c.JSON(http.StatusInternalServerError, errorsResponse{Errors: []string{InternalMsg}})</span>
+        case len(errs) &gt; 0:
+                <span class="cov8" title="1">c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})</span>
+        default:
+                <span class="cov8" title="1">return false</span>
+        }
+        <span class="cov8" title="1">return true</span>
+}
+
 func (h *CalculatorHandler) Validate(c *gin.Context) {
         <span class="cov8" title="1">input, ok := bindExpression(c)
         if !ok </span>{
                 <span class="cov8" title="1">return
 </span>        }
-        <span class="cov8" title="1">if errs := h.service.Validate(input); len(errs) &gt; 0 </span>{
-                <span class="cov8" title="1">c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})
-                return
+        <span class="cov8" title="1">if errs, err := h.service.Validate(input); respondFailure(c, errs, err) </span>{
+                <span class="cov8" title="1">return
 </span>        }
         <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{"result": Ok})</span>
 }
@@ -471,20 +692,14 @@ func (h *CalculatorHandler) Calculate(c *gin.Context) {
                 <span class="cov8" title="1">return
 </span>        }
         <span class="cov8" title="1">calc, errs, err := h.service.Calculate(input)
-        if err != nil </span>{
-                <span class="cov8" title="1">_ = c.Error(err)
-                c.JSON(http.StatusInternalServerError, errorsResponse{Errors: []string{"Internal error"}})
-                return
-</span>        }
-        <span class="cov8" title="1">if len(errs) &gt; 0 </span>{
-                <span class="cov8" title="1">c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})
-                return
+        if respondFailure(c, errs, err) </span>{
+                <span class="cov8" title="1">return
 </span>        }
         <span class="cov8" title="1">c.JSON(http.StatusOK, calc)</span>
 }
 </pre>
 		
-		<pre class="file" id="file5" style="display: none">package handler
+		<pre class="file" id="file7" style="display: none">package handler
 
 import (
         "net/http"
@@ -506,7 +721,7 @@ func (h *HealthHandler) Get(c *gin.Context) {
 </span>}
 </pre>
 		
-		<pre class="file" id="file6" style="display: none">package router
+		<pre class="file" id="file8" style="display: none">package router
 
 import "github.com/gin-gonic/gin"
 
@@ -531,7 +746,7 @@ func New(health HealthHandler, calculator CalculatorHandler) *gin.Engine {
 </span>}
 </pre>
 		
-		<pre class="file" id="file7" style="display: none">package server
+		<pre class="file" id="file9" style="display: none">package server
 
 import (
         "context"
@@ -565,11 +780,12 @@ func Run(ctx context.Context, srv *http.Server, ln net.Listener, shutdownTimeout
 }
 </pre>
 		
-		<pre class="file" id="file8" style="display: none">package service
+		<pre class="file" id="file10" style="display: none">package service
 
 import (
         "errors"
 
+        "github.com/shopspring/decimal"
         "github.com/ulayera/fullstack-calculator/backend/internal/expression"
 )
 
@@ -588,7 +804,7 @@ type Calculation struct {
 }
 
 type CalculatorService interface {
-        Validate(input string) []string
+        Validate(input string) ([]string, error)
         Calculate(input string) (Calculation, []string, error)
 }
 
@@ -600,28 +816,36 @@ func NewCalculatorService(p Parser) CalculatorService {
         <span class="cov8" title="1">return calculatorService{parser: p}
 </span>}
 
-func (s calculatorService) Validate(input string) []string {
-        <span class="cov8" title="1">_, errs := s.parser.Parse(input)
-        return errs
+func (s calculatorService) Validate(input string) ([]string, error) {
+        <span class="cov8" title="1">_, _, errs, err := s.evaluate(input)
+        return errs, err
 </span>}
 
 func (s calculatorService) Calculate(input string) (Calculation, []string, error) {
+        <span class="cov8" title="1">value, undefined, errs, err := s.evaluate(input)
+        switch </span>{
+        case len(errs) &gt; 0 || err != nil:
+                <span class="cov8" title="1">return Calculation{}, errs, err</span>
+        case undefined:
+                <span class="cov8" title="1">return Calculation{Result: Undefined}, nil, nil</span>
+        }
+        <span class="cov8" title="1">return Calculation{Result: value.Round(ResultPlaces).String(), Exact: value.String()}, nil, nil</span>
+}
+
+func (s calculatorService) evaluate(input string) (decimal.Decimal, bool, []string, error) {
         <span class="cov8" title="1">node, errs := s.parser.Parse(input)
         if len(errs) &gt; 0 </span>{
-                <span class="cov8" title="1">return Calculation{}, errs, nil
+                <span class="cov8" title="1">return decimal.Decimal{}, false, errs, nil
 </span>        }
         <span class="cov8" title="1">value, err := node.Eval()
         if errors.Is(err, expression.ErrDivisionByZero) </span>{
-                <span class="cov8" title="1">return Calculation{Result: Undefined}, nil, nil
+                <span class="cov8" title="1">return decimal.Decimal{}, true, nil, nil
 </span>        }
-        <span class="cov8" title="1">if err != nil </span>{
-                <span class="cov8" title="1">return Calculation{}, nil, err
-</span>        }
-        <span class="cov8" title="1">return Calculation{Result: value.Round(ResultPlaces).String(), Exact: value.String()}, nil, nil</span>
+        <span class="cov8" title="1">return value, false, nil, err</span>
 }
 </pre>
 		
-		<pre class="file" id="file9" style="display: none">package service
+		<pre class="file" id="file11" style="display: none">package service
 
 type HealthStatus struct {
         Status string `json:"status"`

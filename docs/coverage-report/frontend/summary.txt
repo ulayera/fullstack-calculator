@@ -3,8 +3,8 @@ No files with missing coverage.
 10 files fully covered.
 
 =============================== Coverage summary ===============================
-Statements   : 100% ( 242/242 )
-Branches     : 100% ( 149/149 )
-Functions    : 100% ( 51/51 )
-Lines        : 100% ( 208/208 )
+Statements   : 100% ( 250/250 )
+Branches     : 100% ( 153/153 )
+Functions    : 100% ( 53/53 )
+Lines        : 100% ( 215/215 )
 ================================================================================
