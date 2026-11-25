@@ -258,11 +258,21 @@ describe('Calculator', () => {
       await settle()
     }
 
+    const finishCalculations = (ctx: ReturnType<typeof setup>) =>
+      act(async () => {
+        await Promise.allSettled(ctx.api.calculate.mock.results.map((r) => r.value))
+      })
+
+    const pressEquals = async (ctx: ReturnType<typeof setup>) => {
+      await ctx.user.click(ctx.button('equals'))
+      await finishCalculations(ctx)
+    }
+
     it('replaces the input with the result when equals is pressed', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
 
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenCalledExactlyOnceWith('1/3')
       expect(ctx.input).toHaveValue('0.3333333333333333')
@@ -274,6 +284,7 @@ describe('Calculator', () => {
       await typeAndSettle(ctx, '1/3')
 
       await ctx.user.keyboard('{Enter}')
+      await finishCalculations(ctx)
 
       expect(ctx.input).toHaveValue('0.3333333333333333')
     })
@@ -281,11 +292,11 @@ describe('Calculator', () => {
     it('chains on the exact value while the result is untouched', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
       ctx.api.calculate.mockResolvedValue({ kind: 'value', result: '1', exact: '0.9999999999999999999999999999999999' })
 
       await typeAndSettle(ctx, '*3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith('0.3333333333333333333333333333333333*3')
       expect(ctx.input).toHaveValue('1')
@@ -294,10 +305,10 @@ describe('Calculator', () => {
     it('keeps the exact value across repeated equals', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
       await settle()
 
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith(third.exact)
     })
@@ -305,11 +316,11 @@ describe('Calculator', () => {
     it('drops the exact value once the result digits are edited', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       await ctx.user.keyboard('{Backspace}')
       await typeAndSettle(ctx, '3*3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith('0.3333333333333333*3')
     })
@@ -317,11 +328,11 @@ describe('Calculator', () => {
     it('drops the exact value even when the edit is undone by retyping', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       await ctx.user.keyboard('{Backspace}')
       await typeAndSettle(ctx, '3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith('0.3333333333333333')
     })
@@ -329,12 +340,12 @@ describe('Calculator', () => {
     it('drops the exact value when digits are appended to the result', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       await typeAndSettle(ctx, '1')
       await ctx.user.keyboard('{Backspace}')
       await settle()
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith('0.3333333333333333')
     })
@@ -342,11 +353,11 @@ describe('Calculator', () => {
     it('drops the exact value on clear', async () => {
       const ctx = setup()
       await typeAndSettle(ctx, '1/3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       await ctx.user.click(ctx.button('clear'))
       await typeAndSettle(ctx, '0.3333333333333333*3')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.api.calculate).toHaveBeenLastCalledWith('0.3333333333333333*3')
     })
@@ -355,7 +366,7 @@ describe('Calculator', () => {
       const ctx = setup({ calculation: { kind: 'undefined' } })
       await typeAndSettle(ctx, '1/0')
 
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
       expect(ctx.input).toHaveValue('undefined')
       expect(ctx.button('equals')).toBeDisabled()
 
@@ -369,7 +380,7 @@ describe('Calculator', () => {
     it('does not validate the undefined result', async () => {
       const ctx = setup({ calculation: { kind: 'undefined' } })
       await typeAndSettle(ctx, '1/0')
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
       ctx.api.validate.mockClear()
 
       await settle()
@@ -381,7 +392,7 @@ describe('Calculator', () => {
       const ctx = setup({ calculation: { kind: 'invalid', errors: ['Rejected by backend'] } })
       await typeAndSettle(ctx, '1+1')
 
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
       expect(screen.getByRole('alert')).toHaveTextContent('Rejected by backend')
       expect(ctx.input).toHaveValue('1+1')
 
@@ -394,7 +405,7 @@ describe('Calculator', () => {
       ctx.api.calculate.mockRejectedValue(new Error('timeout'))
       await typeAndSettle(ctx, '1+1')
 
-      await ctx.user.click(ctx.button('equals'))
+      await pressEquals(ctx)
 
       expect(ctx.onUnavailable).toHaveBeenCalledOnce()
       expect(ctx.input).toHaveValue('1+1')
