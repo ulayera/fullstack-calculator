@@ -6,7 +6,7 @@ info:
     REST API for the fullstack calculator.
 
     Expressions may contain digits, `.`, `+`, `-`, `*`, `/`, `^`, `%`, `√`
-    (or its alias `V`), `(` and `)` only.
+    (or its aliases `V` and `v`), `(` and `)` only.
 
     Precedence from highest to lowest:
     1. parentheses
@@ -30,7 +30,11 @@ info:
     `0^0 = 1`; `0` raised to a negative power is `undefined`, like division
     by zero. A power `a^b` with `|b * log10(|a|)|` above the configured limit
     (`POWER_LIMIT`, default 100000) is refused with 422, and so is `√` of a
-    negative number or a negative base with a non-integer exponent.
+    negative number or a negative base with a non-integer exponent. The same
+    422 refusal applies to any intermediate result with more than
+    `max(POWER_LIMIT, 16384) + 34` digits or that order of magnitude, and to
+    exact integer powers adding up to more than 10 x `POWER_LIMIT` digits in
+    one expression.
 security: []
 servers:
   - url: /api/v1
@@ -94,10 +98,14 @@ paths:
                   value:
                     result: "0.3333333333333333"
                     exact: "0.3333333333333333333333333333333333"
-                power:
+                squareRoot:
                   value:
                     result: "1.414213562373095"
                     exact: "1.414213562373095048801688724209698"
+                fractionalPower:
+                  value:
+                    result: "1.2599210498948732"
+                    exact: "1.259921049894873164767210607278228"
                 divisionByZero:
                   value:
                     result: undefined
