@@ -1,20 +1,36 @@
 openapi: 3.1.0
 info:
   title: Fullstack Calculator API
-  version: 0.2.0
+  version: 0.3.0
   description: |
     REST API for the fullstack calculator.
 
-    Expressions may contain digits, `.`, `+`, `-`, `*`, `/`, `(` and `)` only.
-    Precedence from highest to lowest: parentheses, unary minus
-    (right-associative, at most one sign per operand), `*` and `/`
-    (left-associative), `+` and `-` (left-associative). Implicit
-    multiplication such as `2(3)` is rejected. Numbers may start with a
-    period (`.5`) but may not end with one (`5.`).
+    Expressions may contain digits, `.`, `+`, `-`, `*`, `/`, `^`, `%`, `√`
+    (or its alias `V`), `(` and `)` only.
 
-    Division keeps 34 significant digits internally. The final result is rounded
-    once to 16 decimal places, half away from zero, with trailing zeros
-    stripped.
+    Precedence from highest to lowest:
+    1. parentheses
+    2. `^` power, right-associative: `2^3^2 = 512`, `2^-1 = 0.5`
+    3. unary minus and `√` square root, right-associative: `-2^2 = -4`,
+       `√16^0.5 = 2`, `√√16 = 2`
+    4. `*`, `/` and `%`, left-associative. `A%B` is A percent of B, i.e.
+       `A*B/100`: `10%200 = 20`, `100/10%50 = 5`, `10%2^3 = 0.8`
+    5. `+` and `-`, left-associative
+
+    Only one binary operator may sit between operands; a single minus sign
+    may follow it (`2^-1`, `2--2`). Implicit multiplication such as `2(3)`
+    or `2√4` is rejected. Numbers may start with a period (`.5`) but may not
+    end with one (`5.`).
+
+    Division, `√` and fractional or negative powers keep 34 significant
+    digits internally. Positive integer powers are exact while their digit
+    count fits the power limit. Only the final result is rounded, once, to
+    16 decimal places, half away from zero, with trailing zeros stripped.
+
+    `0^0 = 1`; `0` raised to a negative power is `undefined`, like division
+    by zero. A power `a^b` with `|b * log10(|a|)|` above the configured limit
+    (`POWER_LIMIT`, default 100000) is refused with 422, and so is `√` of a
+    negative number or a negative base with a non-integer exponent.
 security: []
 servers:
   - url: /api/v1
@@ -36,7 +52,7 @@ paths:
   /validate:
     post:
       operationId: validateExpression
-      summary: Validate an expression without evaluating it
+      summary: Validate an expression, including whether it can be computed
       tags: [calculator]
       requestBody:
         $ref: "#/components/requestBodies/Expression"
@@ -51,6 +67,10 @@ paths:
                 result: Ok
         "400":
           $ref: "#/components/responses/Invalid"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
+        "500":
+          $ref: "#/components/responses/Internal"
   /calculate:
     post:
       operationId: calculateExpression
@@ -74,19 +94,19 @@ paths:
                   value:
                     result: "0.3333333333333333"
                     exact: "0.3333333333333333333333333333333333"
+                power:
+                  value:
+                    result: "1.414213562373095"
+                    exact: "1.414213562373095048801688724209698"
                 divisionByZero:
                   value:
                     result: undefined
         "400":
           $ref: "#/components/responses/Invalid"
+        "422":
+          $ref: "#/components/responses/Unprocessable"
         "500":
-          description: Unexpected evaluation failure
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Errors"
-              example:
-                errors: [Internal error]
+          $ref: "#/components/responses/Internal"
 components:
   requestBodies:
     Expression:
@@ -116,6 +136,27 @@ components:
             malformedBody:
               value:
                 errors: ["Request body must be a JSON object with a string 'expression'"]
+    Unprocessable:
+      description: The expression is valid but its computation is refused
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+          examples:
+            computationLimit:
+              value:
+                errors: [power operation refused due to computation limit exceeded]
+            imaginary:
+              value:
+                errors: [imaginary numbers not supported]
+    Internal:
+      description: Unexpected evaluation failure
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Errors"
+          example:
+            errors: [Internal error]
   schemas:
     Health:
       type: object
