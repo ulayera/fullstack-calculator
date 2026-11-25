@@ -166,6 +166,30 @@ test.describe('advanced operations api', () => {
     }
   }
 
+  test('refuses expressions whose evaluation would outgrow the limit, quickly', async ({ request }) => {
+    for (const expression of [
+      Array(1000).fill('9^99999').join('*'),
+      Array(900).fill('2^332192-2^332192').join('+'),
+      '(1+10^-400)^(10^390)',
+    ]) {
+      const started = Date.now()
+      const response = await post(request, 'validate', expression)
+
+      expect(response.status(), expression.slice(0, 30)).toBe(422)
+      expect(await response.json()).toEqual({ errors: [LIMIT_ERROR] })
+      expect(Date.now() - started).toBeLessThan(1000)
+    }
+  })
+
+  test('keeps integer powers exact up to the limit and accepts lowercase v', async ({ request }) => {
+    const power = await (await post(request, 'calculate', '11^60000')).json()
+    const root = await (await post(request, 'calculate', 'v4')).json()
+
+    expect(power.exact).toHaveLength(62484)
+    expect(power.exact.endsWith('1')).toBe(true)
+    expect(root).toEqual({ result: '2', exact: '2' })
+  })
+
   test('validate accepts powers right at the limit', async ({ request }) => {
     for (const expression of ['10^100000', '2^332192', '0.1^-100000']) {
       const response = await post(request, 'validate', expression)
