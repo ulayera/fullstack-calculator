@@ -9,6 +9,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/ulayera/fullstack-calculator/backend/internal/config"
 	"github.com/ulayera/fullstack-calculator/backend/internal/expression"
 	"github.com/ulayera/fullstack-calculator/backend/internal/handler"
 	"github.com/ulayera/fullstack-calculator/backend/internal/router"
@@ -22,6 +23,11 @@ func main() {
 		port = "8080"
 	}
 
+	powerLimit, err := config.PowerLimit(os.LookupEnv)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
@@ -31,7 +37,7 @@ func main() {
 	}
 
 	health := handler.NewHealthHandler(service.NewHealthService())
-	calculator := handler.NewCalculatorHandler(service.NewCalculatorService(expression.Parser{}))
+	calculator := handler.NewCalculatorHandler(service.NewCalculatorService(expression.Parser{PowerLimit: powerLimit}))
 	srv := server.New(router.New(health, calculator))
 	log.Printf("listening on %s", ln.Addr())
 	if err := server.Run(ctx, srv, ln, 10*time.Second); err != nil {
