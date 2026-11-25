@@ -2,10 +2,15 @@ export const UNDEFINED = 'undefined'
 
 export type Edit = { value: string; caret: number }
 
-const ALLOWED = /^[0-9.+\-*/()]+$/
+export const ROOT = '√'
+
+const ALLOWED = /^[0-9.+\-*/()^%√]+$/
+const ROOT_ALIAS = /[Vv]/g
 const DIGIT = /^[0-9]$/
-const STARTS_FRESH = /^[0-9.(-]/
-const BINARY_NON_MINUS = new Set(['+', '*', '/'])
+const STARTS_FRESH = /^[0-9.(√-]/
+const BINARY_NON_MINUS = new Set(['+', '*', '/', '^', '%'])
+
+export const normalize = (text: string): string => text.replace(ROOT_ALIAS, ROOT)
 
 export const countViolations = (value: string): number => {
   let count = 0
@@ -38,7 +43,7 @@ export const countViolations = (value: string): number => {
     if (BINARY_NON_MINUS.has(ch)) {
       if (expectsOperand) count += 1
       expectsOperand = true
-    } else if (ch === '(') {
+    } else if (ch === '(' || ch === ROOT) {
       expectsOperand = true
     } else if (ch === ')') {
       expectsOperand = false
@@ -49,7 +54,8 @@ export const countViolations = (value: string): number => {
   return count
 }
 
-export const insert = (value: string, start: number, end: number, text: string): Edit | null => {
+export const insert = (value: string, start: number, end: number, typed: string): Edit | null => {
+  const text = normalize(typed)
   if (value === UNDEFINED && !STARTS_FRESH.test(text)) return null
   const [base, from, to] = value === UNDEFINED ? ['', 0, 0] : [value, start, end]
   const next = base.slice(0, from) + text + base.slice(to)

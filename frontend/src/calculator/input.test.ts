@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { change, countViolations, insert } from './input'
+import { change, countViolations, insert, normalize } from './input'
 
 const typed = (keys: string) =>
   [...keys].reduce((value, key) => insert(value, value.length, value.length, key)?.value ?? value, '')
@@ -18,6 +18,18 @@ describe('countViolations', () => {
     '2(3)',
     '((',
     '-',
+    '2^3',
+    '2^-1',
+    '20%300',
+    '10%-5',
+    '√4',
+    '√-4',
+    '-√4',
+    '√√16',
+    '2^√4',
+    '√(2+2)',
+    '2√4',
+    '√',
   ])('finds none in %j', (value) => {
     expect(countViolations(value)).toBe(0)
   })
@@ -37,6 +49,19 @@ describe('countViolations', () => {
     ['2a', 1],
     ['undefined', 9],
     ['2 +3', 1],
+    ['^2', 1],
+    ['%2', 1],
+    ['2^^3', 1],
+    ['2%%3', 1],
+    ['2%*3', 1],
+    ['2*^3', 1],
+    ['√*4', 1],
+    ['√%4', 1],
+    ['(^2)', 1],
+    ['2^--3', 1],
+    ['√--4', 1],
+    ['5.√', 1],
+    ['V4', 1],
   ])('counts %j as %i', (value, expected) => {
     expect(countViolations(value)).toBe(expected)
   })
@@ -51,7 +76,7 @@ describe('insert', () => {
     expect(insert('1+2', 1, 2, '*')).toEqual({ value: '1*2', caret: 2 })
   })
 
-  it.each(['a', ' ', '^', '%', 'e', '=', ',', ''])('blocks the disallowed text %j', (text) => {
+  it.each(['a', ' ', 'e', '=', ',', '&', '!', 'x', ''])('blocks the disallowed text %j', (text) => {
     expect(insert('1', 1, 1, text)).toBeNull()
   })
 
@@ -67,11 +92,22 @@ describe('insert', () => {
     ['5.+2', '5.2'],
     ['5.)', '5.'],
     ['5..', '5.'],
+    ['V4', '√4'],
+    ['v4', '√4'],
+    ['2^^3', '2^3'],
+    ['2%%3', '2%3'],
+    ['2^*3', '2^3'],
+    ['^2', '2'],
+    ['%2', '2'],
+    ['√*4', '√4'],
+    ['2^--3', '2^-3'],
+    ['5.√', '5.'],
+    ['2*V(3^2)', '2*√(3^2)'],
   ])('typing %j yields %j', (keys, expected) => {
     expect(typed(keys)).toBe(expected)
   })
 
-  it.each(['2--2', '2*-3', '-(2+3)', '.5', '0.25/(3-1.5)', '(-3)', '2+)'])(
+  it.each(['2--2', '2*-3', '-(2+3)', '.5', '0.25/(3-1.5)', '(-3)', '2+)', '2^3^2', '-2^2', '2^-1', '√4*4', '√16^0.5', '10%200', '5+10%50', '100/10%50', '10%2^3', '√-4', '√√16'])(
     'lets %j through unchanged',
     (keys) => {
       expect(typed(keys)).toBe(keys)
@@ -98,6 +134,20 @@ describe('insert', () => {
     expect(insert('undefined', 9, 9, '+')).toBeNull()
     expect(insert('undefined', 9, 9, '.')).toEqual({ value: '.', caret: 1 })
     expect(insert('undefined', 9, 9, '(')).toEqual({ value: '(', caret: 1 })
+    expect(insert('undefined', 9, 9, '√')).toEqual({ value: '√', caret: 1 })
+    expect(insert('undefined', 9, 9, 'V')).toEqual({ value: '√', caret: 1 })
+    expect(insert('undefined', 9, 9, '^')).toBeNull()
+    expect(insert('undefined', 9, 9, '%')).toBeNull()
+  })
+
+  it('converts V to √ in inserted text, including multi-character text', () => {
+    expect(insert('2*', 2, 2, 'V9')).toEqual({ value: '2*√9', caret: 4 })
+  })
+})
+
+describe('normalize', () => {
+  it('turns every V and v into √ and leaves the rest alone', () => {
+    expect(normalize('V4+v9-√1')).toBe('√4+√9-√1')
   })
 })
 
@@ -128,6 +178,10 @@ describe('change', () => {
   it('handles repeated characters around the edit', () => {
     expect(change('11', '111')).toEqual({ value: '111', caret: 3 })
     expect(change('111', '11')).toEqual({ value: '11', caret: 2 })
+  })
+
+  it('converts a typed V to √', () => {
+    expect(change('2*', '2*V')).toEqual({ value: '2*√', caret: 3 })
   })
 
   it('starts fresh when typing over an undefined result', () => {

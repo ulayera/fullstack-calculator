@@ -2,6 +2,8 @@ export const VALIDATE_PATH = '/api/v1/validate'
 export const CALCULATE_PATH = '/api/v1/calculate'
 export const API_TIMEOUT_MS = 5000
 
+const REJECTION_STATUSES = new Set([400, 422])
+
 export class ServiceUnavailableError extends Error {
   constructor(cause?: unknown) {
     super('Service unavailable', { cause })
@@ -52,7 +54,7 @@ export const createCalculatorApi = (
       if (signal?.aborted) throw error
       throw new ServiceUnavailableError(error)
     }
-    if (response.status !== 400 && !response.ok) {
+    if (!response.ok && !REJECTION_STATUSES.has(response.status)) {
       throw new ServiceUnavailableError(`Unexpected status ${response.status}`)
     }
     const body: unknown = await response.json().catch(() => null)

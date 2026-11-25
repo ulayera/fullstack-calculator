@@ -39,6 +39,15 @@ describe('createCalculatorApi', () => {
       })
     })
 
+    it('returns the errors of a 422 response', async () => {
+      const http = respond({ errors: ['imaginary numbers not supported'] }, 422)
+
+      await expect(createCalculatorApi(http).validate('√-4')).resolves.toEqual({
+        valid: false,
+        errors: ['imaginary numbers not supported'],
+      })
+    })
+
     it('rethrows the abort when the caller cancels', async () => {
       const controller = new AbortController()
       const pending = createCalculatorApi(hanging()).validate('1', controller.signal)
@@ -80,6 +89,14 @@ describe('createCalculatorApi', () => {
       })
     })
 
+    it('returns the errors of a 422 response', async () => {
+      const refused = 'power operation refused due to computation limit exceeded'
+      await expect(createCalculatorApi(respond({ errors: [refused] }, 422)).calculate('10^100001')).resolves.toEqual({
+        kind: 'invalid',
+        errors: [refused],
+      })
+    })
+
     it.each([[{ result: '1' }], [{ result: 1, exact: '1' }], [{ exact: '1' }]])(
       'rejects as unavailable on the unexpected body %j',
       async (body) => {
@@ -91,7 +108,7 @@ describe('createCalculatorApi', () => {
   })
 
   describe('failures', () => {
-    it.each([502, 503, 504, 500, 404])('rejects as unavailable on status %i', async (status) => {
+    it.each([502, 503, 504, 500, 404, 401, 409])('rejects as unavailable on status %i', async (status) => {
       await expect(createCalculatorApi(respond({ errors: ['x'] }, status)).validate('1')).rejects.toBeInstanceOf(
         ServiceUnavailableError,
       )
