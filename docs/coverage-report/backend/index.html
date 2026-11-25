@@ -110,8 +110,8 @@ func PowerLimit(lookup Lookup) (int64, error) {
                 <span class="cov8" title="1">return expression.DefaultPowerLimit, nil
 </span>        }
         <span class="cov8" title="1">limit, err := strconv.ParseInt(raw, 10, 64)
-        if err != nil || limit &lt;= 0 </span>{
-                <span class="cov8" title="1">return 0, fmt.Errorf("%s must be a positive integer, got %q", PowerLimitVar, raw)
+        if err != nil || limit &lt;= 0 || limit &gt; expression.MaxPowerLimit </span>{
+                <span class="cov8" title="1">return 0, fmt.Errorf("%s must be an integer from 1 to %d, got %q", PowerLimitVar, expression.MaxPowerLimit, raw)
 </span>        }
         <span class="cov8" title="1">return limit, nil</span>
 }
@@ -153,6 +153,7 @@ var symbols = map[rune]Kind{
         '%': Percent,
         '√': Root,
         'V': Root,
+        'v': Root,
 }
 
 func isNumberRune(r rune) bool {
@@ -237,6 +238,7 @@ type Binary struct {
         Op    Kind
         Left  Node
         Right Node
+        Limit int64
 }
 
 func (b Binary) Eval() (decimal.Decimal, error) {
@@ -248,6 +250,11 @@ func (b Binary) Eval() (decimal.Decimal, error) {
         if err != nil </span>{
                 <span class="cov8" title="1">return decimal.Decimal{}, err
 </span>        }
+        <span class="cov8" title="1">v, err := b.apply(left, right)
+        return bounded(v, err, b.Limit)</span>
+}
+
+func (b Binary) apply(left, right decimal.Decimal) (decimal.Decimal, error) {
         <span class="cov8" title="1">switch b.Op </span>{
         case Plus:
                 <span class="cov8" title="1">return left.Add(right), nil</span>
@@ -259,6 +266,18 @@ func (b Binary) Eval() (decimal.Decimal, error) {
                 <span class="cov8" title="1">return left.Mul(right).Shift(-2), nil</span>
         }
         <span class="cov8" title="1">return divide(left, right)</span>
+}
+
+func bounded(v decimal.Decimal, err error, limit int64) (decimal.Decimal, error) {
+        <span class="cov8" title="1">if err != nil || v.IsZero() </span>{
+                <span class="cov8" title="1">return v, err
+</span>        }
+        <span class="cov8" title="1">budget := max(limit, MaxLength) + DivisionPrecision
+        lead := int64(leadingExponent(v))
+        if int64(v.NumDigits()) &gt; budget || lead &gt; budget || -lead &gt; budget </span>{
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
+</span>        }
+        <span class="cov8" title="1">return v, nil</span>
 }
 
 type SquareRoot struct {
@@ -310,6 +329,7 @@ type descent struct {
         tokens     []Token
         pos        int
         powerLimit int64
+        work       *Work
 }
 
 type Parser struct {
@@ -321,7 +341,7 @@ func (parser Parser) Parse(input string) (Node, []string) {
         if len(errs) &gt; 0 </span>{
                 <span class="cov8" title="1">return nil, errs
 </span>        }
-        <span class="cov8" title="1">p := &amp;descent{tokens: tokens, powerLimit: parser.PowerLimit}
+        <span class="cov8" title="1">p := &amp;descent{tokens: tokens, powerLimit: parser.PowerLimit, work: NewWork(parser.PowerLimit)}
         return p.expression(), nil</span>
 }
 
@@ -346,7 +366,7 @@ func (p *descent) expression() Node {
                 if !ok </span>{
                         <span class="cov8" title="1">return left
 </span>                }
-                <span class="cov8" title="1">left = Binary{Op: op, Left: left, Right: p.term()}</span>
+                <span class="cov8" title="1">left = Binary{Op: op, Left: left, Right: p.term(), Limit: p.powerLimit}</span>
         }
 }
 
@@ -357,7 +377,7 @@ func (p *descent) term() Node {
                 if !ok </span>{
                         <span class="cov8" title="1">return left
 </span>                }
-                <span class="cov8" title="1">left = Binary{Op: op, Left: left, Right: p.unary()}</span>
+                <span class="cov8" title="1">left = Binary{Op: op, Left: left, Right: p.unary(), Limit: p.powerLimit}</span>
         }
 }
 
@@ -374,7 +394,7 @@ func (p *descent) unary() Node {
 func (p *descent) power() Node {
         <span class="cov8" title="1">base := p.primary()
         if _, ok := p.accept(Caret); ok </span>{
-                <span class="cov8" title="1">return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit}
+                <span class="cov8" title="1">return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit, Work: p.work}
 </span>        }
         <span class="cov8" title="1">return base</span>
 }
@@ -402,9 +422,24 @@ import (
 
 const (
         DefaultPowerLimit = 100000
+        MaxPowerLimit     = 100000000
         mantissaDigits    = 17
-        reciprocalGuard   = 10
+        guardDigits       = 10
+        workFactor        = 10
 )
+
+type Work struct {
+        remaining int64
+}
+
+func NewWork(limit int64) *Work {
+        <span class="cov8" title="1">return &amp;Work{remaining: workFactor * limit}
+</span>}
+
+func (w *Work) spend(digits int64) bool {
+        <span class="cov8" title="1">w.remaining -= digits
+        return w.remaining &gt;= 0
+</span>}
 
 var nearOne = decimal.New(1, -2)
 
@@ -412,6 +447,7 @@ type Power struct {
         Base     Node
         Exponent Node
         Limit    int64
+        Work     *Work
 }
 
 func (p Power) Eval() (decimal.Decimal, error) {
@@ -423,10 +459,11 @@ func (p Power) Eval() (decimal.Decimal, error) {
         if err != nil </span>{
                 <span class="cov8" title="1">return decimal.Decimal{}, err
 </span>        }
-        <span class="cov8" title="1">return power(base, exponent, p.Limit)</span>
+        <span class="cov8" title="1">v, err := power(base, exponent, p.Limit, p.Work)
+        return bounded(v, err, p.Limit)</span>
 }
 
-func power(base, exponent decimal.Decimal, limit int64) (decimal.Decimal, error) {
+func power(base, exponent decimal.Decimal, limit int64, work *Work) (decimal.Decimal, error) {
         <span class="cov8" title="1">switch </span>{
         case exponent.IsZero():
                 <span class="cov8" title="1">return one, nil</span>
@@ -442,29 +479,33 @@ func power(base, exponent decimal.Decimal, limit int64) (decimal.Decimal, error)
                 <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
 </span>        }
         <span class="cov8" title="1">if !exponent.IsInteger() || exponent.IsNegative() </span>{
-                <span class="cov8" title="1">v, err := base.PowWithPrecision(exponent, significantPlaces(magnitude, 1))
+                <span class="cov8" title="1">v, err := base.PowWithPrecision(exponent, significantPlaces(magnitude))
                 if err != nil </span>{
-                        <span class="cov8" title="1">return decimal.Decimal{}, err
+                        <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
 </span>                }
                 <span class="cov8" title="1">return v.Round(DivisionPrecision - 1 - leadingExponent(v)), nil</span>
         }
-        <span class="cov8" title="1">if exactWithin(base, exponent, limit) </span>{
-                <span class="cov8" title="1">return base.PowBigInt(exponent.BigInt())
-</span>        }
-        <span class="cov8" title="1">inverse, err := base.PowWithPrecision(exponent.Neg(), significantPlaces(-magnitude, reciprocalGuard))
+        <span class="cov8" title="1">if digits := exactDigits(base, exponent, magnitude); digits.LessThanOrEqual(decimal.NewFromInt(limit + 1)) </span>{
+                <span class="cov8" title="1">if !work.spend(digits.IntPart()) </span>{
+                        <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
+</span>                }
+                <span class="cov8" title="1">return base.PowBigInt(exponent.BigInt())</span>
+        }
+        <span class="cov8" title="1">inverse, err := base.PowWithPrecision(exponent.Neg(), significantPlaces(-magnitude))
         if err != nil </span>{
-                <span class="cov8" title="1">return decimal.Decimal{}, err
+                <span class="cov8" title="1">return decimal.Decimal{}, ErrPowerLimit
 </span>        }
         <span class="cov8" title="1">return divide(one, inverse)</span>
 }
 
-func significantPlaces(magnitude float64, guard int32) int32 {
-        <span class="cov8" title="1">return DivisionPrecision - 1 + guard - int32(math.Floor(magnitude))
+func significantPlaces(magnitude float64) int32 {
+        <span class="cov8" title="1">return DivisionPrecision - 1 + guardDigits - int32(math.Floor(magnitude))
 </span>}
 
-func exactWithin(base, exponent decimal.Decimal, limit int64) bool {
-        <span class="cov8" title="1">digits := int64(base.NumDigits()) + int64(math.Abs(float64(base.Exponent())))
-        return exponent.Mul(decimal.NewFromInt(digits)).LessThanOrEqual(decimal.NewFromInt(limit))
+func exactDigits(base, exponent decimal.Decimal, magnitude float64) decimal.Decimal {
+        <span class="cov8" title="1">whole := decimal.NewFromFloat(math.Floor(max(magnitude, 0)) + 1)
+        scale := decimal.NewFromInt(int64(max(-base.Exponent(), 0)))
+        return whole.Add(exponent.Mul(scale))
 </span>}
 
 func log10Power(base, exponent decimal.Decimal) float64 {
