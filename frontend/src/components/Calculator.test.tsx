@@ -34,8 +34,22 @@ describe('Calculator', () => {
       for (const name of ['plus', 'minus', 'multiply', 'divide', 'open parenthesis', 'close parenthesis']) {
         expect(button(name)).toBeInTheDocument()
       }
-      expect(screen.getByTestId('advanced-column')).toBeEmptyDOMElement()
-      expect(screen.getByTestId('advanced-column')).toHaveAttribute('aria-hidden', 'true')
+      const advanced = screen.getByTestId('advanced-column')
+      expect(within(advanced).getAllByRole('button').map((b) => b.getAttribute('aria-label'))).toEqual([
+        'square root',
+        'power',
+        'percent of',
+      ])
+    })
+
+    it('labels the advanced keys and widens percent to read "% of"', () => {
+      const { button } = setup()
+
+      expect(button('square root')).toHaveTextContent('√')
+      expect(button('power')).toHaveTextContent('^')
+      expect(button('percent of')).toHaveTextContent('% of')
+      expect(button('percent of')).toHaveClass('key--wide')
+      expect(button('power')).not.toHaveClass('key--wide')
     })
 
     it('orders digits as a 3x4 pad ending in 0, . and =', () => {
@@ -71,9 +85,25 @@ describe('Calculator', () => {
     it('silently blocks disallowed characters and repeated operators', async () => {
       const { user, input } = setup()
 
-      await user.type(input, 'a2 ^+*+3e=1..2.3')
+      await user.type(input, 'a2 &+*+3e=1..2.3')
 
       expect(input).toHaveValue('2+31.23')
+    })
+
+    it('accepts the advanced operators and turns V into √', async () => {
+      const { user, input } = setup()
+
+      await user.type(input, 'V16^0.5+10%2^3-v4')
+
+      expect(input).toHaveValue('√16^0.5+10%2^3-√4')
+    })
+
+    it('blocks repeated advanced operators', async () => {
+      const { user, input } = setup()
+
+      await user.type(input, '2^^%3%*^4')
+
+      expect(input).toHaveValue('2^3%4')
     })
 
     it('allows a single minus sign after an operator', async () => {
@@ -138,6 +168,16 @@ describe('Calculator', () => {
       expect(input).toHaveValue('5.')
     })
 
+    it('insert the advanced operators', async () => {
+      const { user, input, button } = setup()
+
+      for (const name of ['square root', '1', '6', 'power', '2', 'percent of', '5', '0']) {
+        await user.click(button(name))
+      }
+
+      expect(input).toHaveValue('√16^2%50')
+    })
+
     it('do not steal focus from the input', async () => {
       const { user, input, button } = setup()
       await user.type(input, '1')
@@ -184,6 +224,19 @@ describe('Calculator', () => {
 
       expect(screen.getByRole('alert')).toHaveTextContent('Incomplete expression')
       expect(screen.getByRole('alert')).toHaveTextContent('Unclosed')
+      expect(button('equals')).toBeDisabled()
+    })
+
+    it('shows refused computations from the backend in the footer and keeps equals disabled', async () => {
+      const { user, input, button, api } = setup()
+      const refused = 'power operation refused due to computation limit exceeded'
+      api.validate.mockResolvedValue({ valid: false, errors: [refused] })
+
+      await user.type(input, '10^100001')
+      await settle()
+
+      expect(api.validate).toHaveBeenLastCalledWith('10^100001', expect.any(AbortSignal))
+      expect(screen.getByRole('alert')).toHaveTextContent(refused)
       expect(button('equals')).toBeDisabled()
     })
 

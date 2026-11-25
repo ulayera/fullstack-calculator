@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react'
 
-type Key = { text: string; label: string; name: string }
+type Key = { text: string; label: string; name: string; wide?: boolean }
 
 const DIGITS: Key[] = ['7', '8', '9', '4', '5', '6', '1', '2', '3', '0'].map((d) => ({
   text: d,
@@ -17,6 +17,12 @@ const OPERATORS: Key[] = [
   { text: ')', label: ')', name: 'close parenthesis' },
 ]
 
+const ADVANCED: Key[] = [
+  { text: '√', label: '√', name: 'square root' },
+  { text: '^', label: '^', name: 'power' },
+  { text: '%', label: '% of', name: 'percent of', wide: true },
+]
+
 const keepInputFocus = (e: MouseEvent) => e.preventDefault()
 
 type KeypadProps = {
@@ -27,11 +33,11 @@ type KeypadProps = {
 }
 
 export function Keypad({ disabled, equalsDisabled, onInsert, onEquals }: KeypadProps) {
-  const key = ({ text, label, name }: Key, className: string) => (
+  const key = ({ text, label, name, wide }: Key, className: string) => (
     <button
       key={text}
       type="button"
-      className={className}
+      className={wide ? `${className} key--wide` : className}
       aria-label={name}
       disabled={disabled}
       onMouseDown={keepInputFocus}
@@ -43,7 +49,9 @@ export function Keypad({ disabled, equalsDisabled, onInsert, onEquals }: KeypadP
 
   return (
     <div className="keypad">
-      <div className="keypad__advanced" aria-hidden="true" data-testid="advanced-column" />
+      <div className="keypad__advanced" data-testid="advanced-column">
+        {ADVANCED.map((a) => key(a, 'key key--operator'))}
+      </div>
       <div className="keypad__digits">
         {DIGITS.map((d) => key(d, 'key key--digit'))}
         {key({ text: '.', label: '.', name: 'decimal point' }, 'key key--digit')}
