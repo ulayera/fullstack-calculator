@@ -12,6 +12,9 @@ const (
 	Slash
 	LParen
 	RParen
+	Caret
+	Percent
+	Root
 )
 
 type Token struct {
@@ -27,6 +30,10 @@ var symbols = map[rune]Kind{
 	'/': Slash,
 	'(': LParen,
 	')': RParen,
+	'^': Caret,
+	'%': Percent,
+	'√': Root,
+	'V': Root,
 }
 
 func isNumberRune(r rune) bool {

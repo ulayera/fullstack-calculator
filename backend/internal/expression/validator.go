@@ -25,12 +25,16 @@ func validate(input string) ([]Token, []string) {
 	return tokens, errs
 }
 
-func isOperator(k Kind) bool {
-	return k == Plus || k == Minus || k == Star || k == Slash
+func isBinary(k Kind) bool {
+	return k == Plus || k == Minus || k == Star || k == Slash || k == Caret || k == Percent
+}
+
+func needsOperand(k Kind) bool {
+	return isBinary(k) || k == Root
 }
 
 func expectsOperand(prev *Token) bool {
-	return prev == nil || prev.Kind == LParen || isOperator(prev.Kind)
+	return prev == nil || prev.Kind == LParen || needsOperand(prev.Kind)
 }
 
 func checkNumbers(tokens []Token) []string {
@@ -57,14 +61,14 @@ func checkSequence(tokens []Token) []string {
 		t := &tokens[i]
 		isSign := false
 		switch t.Kind {
-		case Number, LParen:
+		case Number, LParen, Root:
 			if !expectsOperand(prev) {
 				errs = append(errs, fmt.Sprintf("Implicit multiplication is not allowed at position %d", t.Pos))
 			}
 		case RParen:
 			if prev != nil && prev.Kind == LParen {
 				errs = append(errs, fmt.Sprintf("Empty parentheses at position %d", prev.Pos))
-			} else if prev != nil && isOperator(prev.Kind) {
+			} else if prev != nil && needsOperand(prev.Kind) {
 				errs = append(errs, fmt.Sprintf("Missing operand after '%s' at position %d", prev.Text, prev.Pos))
 			}
 		case Minus:
@@ -80,7 +84,7 @@ func checkSequence(tokens []Token) []string {
 		prevIsSign = isSign
 		prev = t
 	}
-	if prev != nil && isOperator(prev.Kind) {
+	if prev != nil && needsOperand(prev.Kind) {
 		errs = append(errs, fmt.Sprintf("Incomplete expression: missing operand after '%s' at position %d", prev.Text, prev.Pos))
 	}
 	return errs

@@ -8,7 +8,21 @@ import (
 
 const DivisionPrecision = 34
 
-var ErrDivisionByZero = errors.New("division by zero")
+var (
+	ErrDivisionByZero = errors.New("division by zero")
+	one               = decimal.NewFromInt(1)
+)
+
+type Unprocessable string
+
+func (u Unprocessable) Error() string {
+	return string(u)
+}
+
+const (
+	ErrImaginary  Unprocessable = "imaginary numbers not supported"
+	ErrPowerLimit Unprocessable = "power operation refused due to computation limit exceeded"
+)
 
 type Node interface {
 	Eval() (decimal.Decimal, error)
@@ -56,7 +70,31 @@ func (b Binary) Eval() (decimal.Decimal, error) {
 		return left.Sub(right), nil
 	case Star:
 		return left.Mul(right), nil
+	case Percent:
+		return left.Mul(right).Shift(-2), nil
 	}
+	return divide(left, right)
+}
+
+type SquareRoot struct {
+	Operand Node
+}
+
+func (s SquareRoot) Eval() (decimal.Decimal, error) {
+	v, err := s.Operand.Eval()
+	if err != nil {
+		return decimal.Decimal{}, err
+	}
+	if v.IsNegative() {
+		return decimal.Decimal{}, ErrImaginary
+	}
+	if v.IsZero() {
+		return v, nil
+	}
+	return v.SqrtRound(DivisionPrecision - 1 - leadingExponent(v)>>1)
+}
+
+func divide(left, right decimal.Decimal) (decimal.Decimal, error) {
 	if right.IsZero() {
 		return decimal.Decimal{}, ErrDivisionByZero
 	}

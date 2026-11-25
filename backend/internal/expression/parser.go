@@ -3,18 +3,21 @@ package expression
 import "github.com/shopspring/decimal"
 
 type descent struct {
-	tokens []Token
-	pos    int
+	tokens     []Token
+	pos        int
+	powerLimit int64
 }
 
-type Parser struct{}
+type Parser struct {
+	PowerLimit int64
+}
 
-func (Parser) Parse(input string) (Node, []string) {
+func (parser Parser) Parse(input string) (Node, []string) {
 	tokens, errs := validate(input)
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	p := &descent{tokens: tokens}
+	p := &descent{tokens: tokens, powerLimit: parser.PowerLimit}
 	return p.expression(), nil
 }
 
@@ -46,7 +49,7 @@ func (p *descent) expression() Node {
 func (p *descent) term() Node {
 	left := p.unary()
 	for {
-		op, ok := p.accept(Star, Slash)
+		op, ok := p.accept(Star, Slash, Percent)
 		if !ok {
 			return left
 		}
@@ -58,7 +61,18 @@ func (p *descent) unary() Node {
 	if _, ok := p.accept(Minus); ok {
 		return Negate{Operand: p.unary()}
 	}
-	return p.primary()
+	if _, ok := p.accept(Root); ok {
+		return SquareRoot{Operand: p.unary()}
+	}
+	return p.power()
+}
+
+func (p *descent) power() Node {
+	base := p.primary()
+	if _, ok := p.accept(Caret); ok {
+		return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit}
+	}
+	return base
 }
 
 func (p *descent) primary() Node {
