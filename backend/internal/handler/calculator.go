@@ -1,15 +1,18 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ulayera/fullstack-calculator/backend/internal/expression"
 	"github.com/ulayera/fullstack-calculator/backend/internal/service"
 )
 
 const (
 	MaxBodyBytes   = 64 << 10
 	InvalidBodyMsg = "Request body must be a JSON object with a string 'expression'"
+	InternalMsg    = "Internal error"
 	Ok             = "Ok"
 )
 
@@ -39,13 +42,28 @@ func bindExpression(c *gin.Context) (string, bool) {
 	return *req.Expression, true
 }
 
+func respondFailure(c *gin.Context, errs []string, err error) bool {
+	var unprocessable expression.Unprocessable
+	switch {
+	case errors.As(err, &unprocessable):
+		c.JSON(http.StatusUnprocessableEntity, errorsResponse{Errors: []string{unprocessable.Error()}})
+	case err != nil:
+		_ = c.Error(err)
+		c.JSON(http.StatusInternalServerError, errorsResponse{Errors: []string{InternalMsg}})
+	case len(errs) > 0:
+		c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})
+	default:
+		return false
+	}
+	return true
+}
+
 func (h *CalculatorHandler) Validate(c *gin.Context) {
 	input, ok := bindExpression(c)
 	if !ok {
 		return
 	}
-	if errs := h.service.Validate(input); len(errs) > 0 {
-		c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})
+	if errs, err := h.service.Validate(input); respondFailure(c, errs, err) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"result": Ok})
@@ -57,13 +75,7 @@ func (h *CalculatorHandler) Calculate(c *gin.Context) {
 		return
 	}
 	calc, errs, err := h.service.Calculate(input)
-	if err != nil {
-		_ = c.Error(err)
-		c.JSON(http.StatusInternalServerError, errorsResponse{Errors: []string{"Internal error"}})
-		return
-	}
-	if len(errs) > 0 {
-		c.JSON(http.StatusBadRequest, errorsResponse{Errors: errs})
+	if respondFailure(c, errs, err) {
 		return
 	}
 	c.JSON(http.StatusOK, calc)

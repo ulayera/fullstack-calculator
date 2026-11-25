@@ -10,14 +10,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/ulayera/fullstack-calculator/backend/internal/expression"
 	"github.com/ulayera/fullstack-calculator/backend/internal/service"
 )
 
 type calculatorServiceMock struct{ mock.Mock }
 
-func (m *calculatorServiceMock) Validate(input string) []string {
-	errs, _ := m.Called(input).Get(0).([]string)
-	return errs
+func (m *calculatorServiceMock) Validate(input string) ([]string, error) {
+	args := m.Called(input)
+	errs, _ := args.Get(0).([]string)
+	return errs, args.Error(1)
 }
 
 func (m *calculatorServiceMock) Calculate(input string) (service.Calculation, []string, error) {
@@ -38,7 +40,7 @@ func call(action func(*gin.Context), body string) *httptest.ResponseRecorder {
 
 func TestValidateRespondsOkWhenServiceFindsNoErrors(t *testing.T) {
 	svc := &calculatorServiceMock{}
-	svc.On("Validate", "4+5").Return(nil).Once()
+	svc.On("Validate", "4+5").Return(nil, nil).Once()
 
 	rec := call(NewCalculatorHandler(svc).Validate, `{"expression":"4+5"}`)
 
@@ -49,7 +51,7 @@ func TestValidateRespondsOkWhenServiceFindsNoErrors(t *testing.T) {
 
 func TestValidateRespondsBadRequestWithServiceErrors(t *testing.T) {
 	svc := &calculatorServiceMock{}
-	svc.On("Validate", "3*").Return([]string{"a", "b"}).Once()
+	svc.On("Validate", "3*").Return([]string{"a", "b"}, nil).Once()
 
 	rec := call(NewCalculatorHandler(svc).Validate, `{"expression":"3*"}`)
 
@@ -59,7 +61,7 @@ func TestValidateRespondsBadRequestWithServiceErrors(t *testing.T) {
 
 func TestValidatePassesEmptyExpressionToService(t *testing.T) {
 	svc := &calculatorServiceMock{}
-	svc.On("Validate", "").Return([]string{"empty"}).Once()
+	svc.On("Validate", "").Return([]string{"empty"}, nil).Once()
 
 	rec := call(NewCalculatorHandler(svc).Validate, `{"expression":""}`)
 
@@ -121,4 +123,50 @@ func TestCalculateRespondsInternalErrorOnUnexpectedFailure(t *testing.T) {
 
 	assert.Equal(t, http.StatusInternalServerError, rec.Code)
 	assert.JSONEq(t, `{"errors":["Internal error"]}`, rec.Body.String())
+}
+
+func TestValidateRespondsUnprocessableOnEvaluationRefusal(t *testing.T) {
+	cases := map[string]error{
+		"√-4":       expression.ErrImaginary,
+		"10^100001": expression.ErrPowerLimit,
+	}
+	for input, refusal := range cases {
+		t.Run(input, func(t *testing.T) {
+			svc := &calculatorServiceMock{}
+			svc.On("Validate", input).Return(nil, refusal).Once()
+
+			rec := call(NewCalculatorHandler(svc).Validate, `{"expression":"`+input+`"}`)
+
+			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+			assert.JSONEq(t, `{"errors":["`+refusal.Error()+`"]}`, rec.Body.String())
+		})
+	}
+}
+
+func TestValidateRespondsInternalErrorOnUnexpectedFailure(t *testing.T) {
+	svc := &calculatorServiceMock{}
+	svc.On("Validate", "x").Return(nil, errors.New("boom")).Once()
+
+	rec := call(NewCalculatorHandler(svc).Validate, `{"expression":"x"}`)
+
+	assert.Equal(t, http.StatusInternalServerError, rec.Code)
+	assert.JSONEq(t, `{"errors":["Internal error"]}`, rec.Body.String())
+}
+
+func TestCalculateRespondsUnprocessableOnEvaluationRefusal(t *testing.T) {
+	cases := map[string]error{
+		"(-8)^0.5": expression.ErrImaginary,
+		"2^332193": expression.ErrPowerLimit,
+	}
+	for input, refusal := range cases {
+		t.Run(input, func(t *testing.T) {
+			svc := &calculatorServiceMock{}
+			svc.On("Calculate", input).Return(service.Calculation{}, nil, refusal).Once()
+
+			rec := call(NewCalculatorHandler(svc).Calculate, `{"expression":"`+input+`"}`)
+
+			assert.Equal(t, http.StatusUnprocessableEntity, rec.Code)
+			assert.JSONEq(t, `{"errors":["`+refusal.Error()+`"]}`, rec.Body.String())
+		})
+	}
 }

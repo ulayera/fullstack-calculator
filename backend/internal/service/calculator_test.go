@@ -37,18 +37,47 @@ func TestValidateReturnsParserErrors(t *testing.T) {
 	p := &parserMock{}
 	p.On("Parse", "3*").Return(nil, []string{"incomplete"}).Once()
 
-	errs := NewCalculatorService(p).Validate("3*")
+	errs, err := NewCalculatorService(p).Validate("3*")
 
+	require.NoError(t, err)
 	assert.Equal(t, []string{"incomplete"}, errs)
 	p.AssertExpectations(t)
 }
 
-func TestValidateReturnsNoErrorsForParsableInput(t *testing.T) {
+func TestValidateEvaluatesParsableInput(t *testing.T) {
+	node := evaluatingTo("9", nil)
 	p := &parserMock{}
-	p.On("Parse", "4+5").Return(&nodeMock{}, nil).Once()
+	p.On("Parse", "4+5").Return(node, nil).Once()
 
-	assert.Empty(t, NewCalculatorService(p).Validate("4+5"))
-	p.AssertExpectations(t)
+	errs, err := NewCalculatorService(p).Validate("4+5")
+
+	require.NoError(t, err)
+	assert.Empty(t, errs)
+	node.AssertExpectations(t)
+}
+
+func TestValidateAcceptsDivisionByZero(t *testing.T) {
+	p := &parserMock{}
+	p.On("Parse", "1/0").Return(evaluatingTo("0", expression.ErrDivisionByZero), nil).Once()
+
+	errs, err := NewCalculatorService(p).Validate("1/0")
+
+	require.NoError(t, err)
+	assert.Empty(t, errs)
+}
+
+func TestValidateReturnsEvaluationErrors(t *testing.T) {
+	for _, want := range []error{expression.ErrImaginary, expression.ErrPowerLimit, errors.New("boom")} {
+		t.Run(want.Error(), func(t *testing.T) {
+			p := &parserMock{}
+			p.On("Parse", "x").Return(evaluatingTo("0", want), nil).Once()
+
+			errs, err := NewCalculatorService(p).Validate("x")
+
+			assert.Empty(t, errs)
+			assert.ErrorIs(t, err, want)
+		})
+	}
 }
 
 func TestCalculateReturnsParserErrorsWithoutEvaluating(t *testing.T) {
@@ -108,14 +137,19 @@ func TestCalculateReturnsUndefinedOnDivisionByZero(t *testing.T) {
 	assert.Equal(t, Calculation{Result: Undefined}, calc)
 }
 
-func TestCalculatePropagatesUnexpectedEvaluationErrors(t *testing.T) {
-	boom := errors.New("boom")
-	p := &parserMock{}
-	p.On("Parse", "x").Return(evaluatingTo("0", boom), nil).Once()
+func TestCalculatePropagatesEvaluationErrors(t *testing.T) {
+	for _, want := range []error{expression.ErrImaginary, expression.ErrPowerLimit, errors.New("boom")} {
+		t.Run(want.Error(), func(t *testing.T) {
+			p := &parserMock{}
+			p.On("Parse", "x").Return(evaluatingTo("0", want), nil).Once()
 
-	_, _, err := NewCalculatorService(p).Calculate("x")
+			calc, errs, err := NewCalculatorService(p).Calculate("x")
 
-	assert.ErrorIs(t, err, boom)
+			assert.Equal(t, Calculation{}, calc)
+			assert.Empty(t, errs)
+			assert.ErrorIs(t, err, want)
+		})
+	}
 }
 
 func TestCalculateProofCasesWithRealParser(t *testing.T) {
@@ -132,8 +166,24 @@ func TestCalculateProofCasesWithRealParser(t *testing.T) {
 		"0.3333333333333333333333333333333333*3": {Result: "1", Exact: "0.9999999999999999999999999999999999"},
 		"0.3333333333333333*3":                   {Result: "0.9999999999999999", Exact: "0.9999999999999999"},
 		"1/0":                                    {Result: Undefined},
+		"2^3^2":                                  {Result: "512", Exact: "512"},
+		"-2^2":                                   {Result: "-4", Exact: "-4"},
+		"2^-1":                                   {Result: "0.5", Exact: "0.5"},
+		"V4*4":                                   {Result: "8", Exact: "8"},
+		"V16^0.5":                                {Result: "2", Exact: "2"},
+		"10%200":                                 {Result: "20", Exact: "20"},
+		"5+10%50":                                {Result: "10", Exact: "10"},
+		"100/10%50":                              {Result: "5", Exact: "5"},
+		"10%2^3":                                 {Result: "0.8", Exact: "0.8"},
+		"20%300":                                 {Result: "60", Exact: "60"},
+		"2^32":                                   {Result: "4294967296", Exact: "4294967296"},
+		"√2":                                     {Result: "1.414213562373095", Exact: "1.414213562373095048801688724209698"},
+		"√2*√2":                                  {Result: "2", Exact: "1.999999999999999999999999999999999777771408885275981220134677251204"},
+		"2^0.5^2":                                {Result: "1.1892071150027211", Exact: "1.189207115002721066717499970560476"},
+		"0^0":                                    {Result: "1", Exact: "1"},
+		"0^-1":                                   {Result: Undefined},
 	}
-	svc := NewCalculatorService(expression.Parser{})
+	svc := NewCalculatorService(expression.Parser{PowerLimit: expression.DefaultPowerLimit})
 	for input, want := range cases {
 		t.Run(input, func(t *testing.T) {
 			calc, errs, err := svc.Calculate(input)
@@ -145,9 +195,28 @@ func TestCalculateProofCasesWithRealParser(t *testing.T) {
 	}
 }
 
+func TestCalculateRefusesUnprocessableWithRealParser(t *testing.T) {
+	cases := map[string]error{
+		"√-4":       expression.ErrImaginary,
+		"(-8)^0.5":  expression.ErrImaginary,
+		"10^100001": expression.ErrPowerLimit,
+		"2^332193":  expression.ErrPowerLimit,
+	}
+	svc := NewCalculatorService(expression.Parser{PowerLimit: expression.DefaultPowerLimit})
+	for input, want := range cases {
+		t.Run(input, func(t *testing.T) {
+			_, validateErr := svc.Validate(input)
+			_, _, calculateErr := svc.Calculate(input)
+
+			assert.ErrorIs(t, validateErr, want)
+			assert.ErrorIs(t, calculateErr, want)
+		})
+	}
+}
+
 func TestCalculateRejectsWithRealParser(t *testing.T) {
-	svc := NewCalculatorService(expression.Parser{})
-	for _, input := range []string{"--3", "2(3)", "3*", "5.", "(2", ""} {
+	svc := NewCalculatorService(expression.Parser{PowerLimit: expression.DefaultPowerLimit})
+	for _, input := range []string{"--3", "2(3)", "3*", "5.", "(2", "", "2^", "20%", "√", "2^^3", "2√4"} {
 		t.Run(input, func(t *testing.T) {
 			_, errs, err := svc.Calculate(input)
 
