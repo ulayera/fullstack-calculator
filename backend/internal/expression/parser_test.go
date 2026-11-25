@@ -91,7 +91,7 @@ func TestParseRejectsInvalidExpressions(t *testing.T) {
 		"2 + 3":   {"Invalid character ' ' at position 2", "Invalid character ' ' at position 4"},
 		"2&3":     {"Invalid character '&' at position 2"},
 		"5!":      {"Invalid character '!' at position 2"},
-		"v4":      {"Invalid character 'v' at position 1"},
+		"x4":      {"Invalid character 'x' at position 1"},
 		"1.2.3":   {"Number '1.2.3' at position 1 has more than one decimal point"},
 		"5.":      {"Number '5.' at position 1 cannot end with a decimal point"},
 		".":       {"Number '.' at position 1 cannot end with a decimal point"},

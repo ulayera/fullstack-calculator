@@ -34,6 +34,7 @@ var symbols = map[rune]Kind{
 	'%': Percent,
 	'√': Root,
 	'V': Root,
+	'v': Root,
 }
 
 func isNumberRune(r rune) bool {

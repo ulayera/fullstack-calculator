@@ -52,6 +52,7 @@ type Binary struct {
 	Op    Kind
 	Left  Node
 	Right Node
+	Limit int64
 }
 
 func (b Binary) Eval() (decimal.Decimal, error) {
@@ -63,6 +64,11 @@ func (b Binary) Eval() (decimal.Decimal, error) {
 	if err != nil {
 		return decimal.Decimal{}, err
 	}
+	v, err := b.apply(left, right)
+	return bounded(v, err, b.Limit)
+}
+
+func (b Binary) apply(left, right decimal.Decimal) (decimal.Decimal, error) {
 	switch b.Op {
 	case Plus:
 		return left.Add(right), nil
@@ -74,6 +80,18 @@ func (b Binary) Eval() (decimal.Decimal, error) {
 		return left.Mul(right).Shift(-2), nil
 	}
 	return divide(left, right)
+}
+
+func bounded(v decimal.Decimal, err error, limit int64) (decimal.Decimal, error) {
+	if err != nil || v.IsZero() {
+		return v, err
+	}
+	budget := max(limit, MaxLength) + DivisionPrecision
+	lead := int64(leadingExponent(v))
+	if int64(v.NumDigits()) > budget || lead > budget || -lead > budget {
+		return decimal.Decimal{}, ErrPowerLimit
+	}
+	return v, nil
 }
 
 type SquareRoot struct {

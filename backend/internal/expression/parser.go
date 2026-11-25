@@ -6,6 +6,7 @@ type descent struct {
 	tokens     []Token
 	pos        int
 	powerLimit int64
+	work       *Work
 }
 
 type Parser struct {
@@ -17,7 +18,7 @@ func (parser Parser) Parse(input string) (Node, []string) {
 	if len(errs) > 0 {
 		return nil, errs
 	}
-	p := &descent{tokens: tokens, powerLimit: parser.PowerLimit}
+	p := &descent{tokens: tokens, powerLimit: parser.PowerLimit, work: NewWork(parser.PowerLimit)}
 	return p.expression(), nil
 }
 
@@ -42,7 +43,7 @@ func (p *descent) expression() Node {
 		if !ok {
 			return left
 		}
-		left = Binary{Op: op, Left: left, Right: p.term()}
+		left = Binary{Op: op, Left: left, Right: p.term(), Limit: p.powerLimit}
 	}
 }
 
@@ -53,7 +54,7 @@ func (p *descent) term() Node {
 		if !ok {
 			return left
 		}
-		left = Binary{Op: op, Left: left, Right: p.unary()}
+		left = Binary{Op: op, Left: left, Right: p.unary(), Limit: p.powerLimit}
 	}
 }
 
@@ -70,7 +71,7 @@ func (p *descent) unary() Node {
 func (p *descent) power() Node {
 	base := p.primary()
 	if _, ok := p.accept(Caret); ok {
-		return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit}
+		return Power{Base: base, Exponent: p.unary(), Limit: p.powerLimit, Work: p.work}
 	}
 	return base
 }

@@ -1,10 +1,10 @@
 package expression
 
 import (
+	"math/big"
 	"strings"
 	"testing"
 
-	"github.com/shopspring/decimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -186,20 +186,88 @@ func TestParseRejectsInvalidAdvancedExpressions(t *testing.T) {
 
 func TestLexTreatsVAndRadicalAsTheSameToken(t *testing.T) {
 	v, _ := Lex("V4")
+	lower, _ := Lex("v4")
 	radical, _ := Lex("√4")
 
 	assert.Equal(t, Root, v[0].Kind)
+	assert.Equal(t, Root, lower[0].Kind)
 	assert.Equal(t, Root, radical[0].Kind)
 	assert.Equal(t, 2, radical[1].Pos)
 }
 
-func TestPowerSurfacesRangeErrorsWhenTheLimitExceedsDecimalRange(t *testing.T) {
-	for _, exponent := range []string{"1500000000", "1500000000.5"} {
-		t.Run(exponent, func(t *testing.T) {
-			_, err := power(decimal.NewFromInt(10), decimal.RequireFromString(exponent), 2000000000)
-
-			assert.Error(t, err)
-			assert.NotErrorIs(t, err, ErrPowerLimit)
+func TestPowerRefusesExponentsBeyondDecimalRange(t *testing.T) {
+	for _, input := range []string{"(1+10^-400)^(10^390)", "(1-10^-400)^(10^390)", "(1+10^-1000)^(-(10^990))"} {
+		t.Run(input, func(t *testing.T) {
+			_, err := eval(t, input)
+			assert.ErrorIs(t, err, ErrPowerLimit)
 		})
 	}
+}
+
+func TestParseKeepsIntegerPowersExactUpToTheLimit(t *testing.T) {
+	got, err := eval(t, "11^60000")
+
+	require.NoError(t, err)
+	want := new(big.Int).Exp(big.NewInt(11), big.NewInt(60000), nil).String()
+	assert.Equal(t, 62484, len(got))
+	assert.True(t, got == want, "11^60000 must be exact")
+}
+
+func TestParseRefusesResultsThatOutgrowTheLimit(t *testing.T) {
+	cases := []string{
+		strings.Join(slicesRepeat("9^99999", 1000), "*"),
+		strings.Join(slicesRepeat("1.1^33000", 1000), "*"),
+		strings.Join(slicesRepeat("10^-99999", 3), "*"),
+		"10^99999*10^99999",
+		"10^100000+10^-100000",
+		"10^-99999/10^99999",
+		"2^332192%2^332192",
+	}
+	for _, input := range cases {
+		t.Run(input[:min(len(input), 30)], func(t *testing.T) {
+			_, err := eval(t, input)
+			assert.ErrorIs(t, err, ErrPowerLimit)
+		})
+	}
+}
+
+func TestParseRefusesExpressionsThatSpendTheExactWorkBudget(t *testing.T) {
+	within := strings.Join(slicesRepeat("2^332192-2^332192", workFactor/2), "+")
+	beyond := within + "+2^332192"
+
+	_, err := eval(t, within)
+	require.NoError(t, err)
+	_, err = eval(t, beyond)
+	assert.ErrorIs(t, err, ErrPowerLimit)
+}
+
+func TestWorkIsSharedByEveryPowerOfOneExpressionOnly(t *testing.T) {
+	parser := Parser{PowerLimit: 10}
+	for range 3 {
+		node, _ := parser.Parse("10^9*10^9-10^9*10^9")
+		_, err := node.Eval()
+		require.NoError(t, err)
+	}
+	node, _ := parser.Parse("10^9*10^9-10^9*10^9+10^9*10^9-10^9*10^9+10^9*10^9-10^9*10^9")
+	_, err := node.Eval()
+	assert.ErrorIs(t, err, ErrPowerLimit)
+}
+
+func TestParseKeepsLargeLiteralArithmeticUnderSmallLimits(t *testing.T) {
+	nines := strings.Repeat("9", 8000)
+	node, errs := Parser{PowerLimit: 3}.Parse(nines + "*" + nines)
+	require.Empty(t, errs)
+
+	v, err := node.Eval()
+
+	require.NoError(t, err)
+	assert.Equal(t, 16000, v.NumDigits())
+}
+
+func slicesRepeat(s string, n int) []string {
+	out := make([]string, n)
+	for i := range out {
+		out[i] = s
+	}
+	return out
 }

@@ -9,9 +9,24 @@ import (
 
 const (
 	DefaultPowerLimit = 100000
+	MaxPowerLimit     = 100000000
 	mantissaDigits    = 17
-	reciprocalGuard   = 10
+	guardDigits       = 10
+	workFactor        = 10
 )
+
+type Work struct {
+	remaining int64
+}
+
+func NewWork(limit int64) *Work {
+	return &Work{remaining: workFactor * limit}
+}
+
+func (w *Work) spend(digits int64) bool {
+	w.remaining -= digits
+	return w.remaining >= 0
+}
 
 var nearOne = decimal.New(1, -2)
 
@@ -19,6 +34,7 @@ type Power struct {
 	Base     Node
 	Exponent Node
 	Limit    int64
+	Work     *Work
 }
 
 func (p Power) Eval() (decimal.Decimal, error) {
@@ -30,10 +46,11 @@ func (p Power) Eval() (decimal.Decimal, error) {
 	if err != nil {
 		return decimal.Decimal{}, err
 	}
-	return power(base, exponent, p.Limit)
+	v, err := power(base, exponent, p.Limit, p.Work)
+	return bounded(v, err, p.Limit)
 }
 
-func power(base, exponent decimal.Decimal, limit int64) (decimal.Decimal, error) {
+func power(base, exponent decimal.Decimal, limit int64, work *Work) (decimal.Decimal, error) {
 	switch {
 	case exponent.IsZero():
 		return one, nil
@@ -49,29 +66,33 @@ func power(base, exponent decimal.Decimal, limit int64) (decimal.Decimal, error)
 		return decimal.Decimal{}, ErrPowerLimit
 	}
 	if !exponent.IsInteger() || exponent.IsNegative() {
-		v, err := base.PowWithPrecision(exponent, significantPlaces(magnitude, 1))
+		v, err := base.PowWithPrecision(exponent, significantPlaces(magnitude))
 		if err != nil {
-			return decimal.Decimal{}, err
+			return decimal.Decimal{}, ErrPowerLimit
 		}
 		return v.Round(DivisionPrecision - 1 - leadingExponent(v)), nil
 	}
-	if exactWithin(base, exponent, limit) {
+	if digits := exactDigits(base, exponent, magnitude); digits.LessThanOrEqual(decimal.NewFromInt(limit + 1)) {
+		if !work.spend(digits.IntPart()) {
+			return decimal.Decimal{}, ErrPowerLimit
+		}
 		return base.PowBigInt(exponent.BigInt())
 	}
-	inverse, err := base.PowWithPrecision(exponent.Neg(), significantPlaces(-magnitude, reciprocalGuard))
+	inverse, err := base.PowWithPrecision(exponent.Neg(), significantPlaces(-magnitude))
 	if err != nil {
-		return decimal.Decimal{}, err
+		return decimal.Decimal{}, ErrPowerLimit
 	}
 	return divide(one, inverse)
 }
 
-func significantPlaces(magnitude float64, guard int32) int32 {
-	return DivisionPrecision - 1 + guard - int32(math.Floor(magnitude))
+func significantPlaces(magnitude float64) int32 {
+	return DivisionPrecision - 1 + guardDigits - int32(math.Floor(magnitude))
 }
 
-func exactWithin(base, exponent decimal.Decimal, limit int64) bool {
-	digits := int64(base.NumDigits()) + int64(math.Abs(float64(base.Exponent())))
-	return exponent.Mul(decimal.NewFromInt(digits)).LessThanOrEqual(decimal.NewFromInt(limit))
+func exactDigits(base, exponent decimal.Decimal, magnitude float64) decimal.Decimal {
+	whole := decimal.NewFromFloat(math.Floor(max(magnitude, 0)) + 1)
+	scale := decimal.NewFromInt(int64(max(-base.Exponent(), 0)))
+	return whole.Add(exponent.Mul(scale))
 }
 
 func log10Power(base, exponent decimal.Decimal) float64 {
