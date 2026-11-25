@@ -1,0 +1,14 @@
+== validator repro 1: 1000 x 9^99999 product (was 504 after 30s, CPU pinned)
+{"errors":["power operation refused due to computation limit exceeded"]} [422] 0.021596s
+== 900 x (2^332192-2^332192) sum (was ~4s)
+{"errors":["power operation refused due to computation limit exceeded"]} [422] 0.032892s
+== validator repro 2: exponents beyond float range (was 500)
+(1+10^-400)^(10^390) -> {"errors":["power operation refused due to computation limit exceeded"]} [422]
+(1-10^-400)^(10^390) -> {"errors":["power operation refused due to computation limit exceeded"]} [422]
+(1+10^-1000)^(-(10^990)) -> {"errors":["power operation refused due to computation limit exceeded"]} [422]
+== validator repro 3: 11^60000 exactness (was 34 digits + zeros)
+len 62484 equals python 11**60000: True
+== validator repro 4: lowercase v (was 400)
+{"result":"2","exact":"2"} [200]
+== POWER_LIMIT above cap
+2026/11/25 00:54:28 POWER_LIMIT must be an integer from 1 to 100000000, got "100000001"

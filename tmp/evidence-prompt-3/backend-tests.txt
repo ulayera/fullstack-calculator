@@ -1,0 +1,682 @@
+?   	github.com/ulayera/fullstack-calculator/backend/cmd/server	[no test files]
+=== RUN   TestPowerLimitDefaultsWhenUnsetOrEmpty
+--- PASS: TestPowerLimitDefaultsWhenUnsetOrEmpty (0.00s)
+=== RUN   TestPowerLimitReadsThePositiveInteger
+--- PASS: TestPowerLimitReadsThePositiveInteger (0.00s)
+=== RUN   TestPowerLimitRejectsInvalidValues
+=== RUN   TestPowerLimitRejectsInvalidValues/0
+=== RUN   TestPowerLimitRejectsInvalidValues/-1
+=== RUN   TestPowerLimitRejectsInvalidValues/1e5
+=== RUN   TestPowerLimitRejectsInvalidValues/abc
+=== RUN   TestPowerLimitRejectsInvalidValues/1.5
+=== RUN   TestPowerLimitRejectsInvalidValues/_5
+=== RUN   TestPowerLimitRejectsInvalidValues/100000001
+=== RUN   TestPowerLimitRejectsInvalidValues/9223372036854775808
+--- PASS: TestPowerLimitRejectsInvalidValues (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/0 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/-1 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/1e5 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/abc (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/1.5 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/_5 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/100000001 (0.00s)
+    --- PASS: TestPowerLimitRejectsInvalidValues/9223372036854775808 (0.00s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/config	0.365s
+=== RUN   TestParseEvaluatesAdvancedOperations
+=== RUN   TestParseEvaluatesAdvancedOperations/V4*4
+=== RUN   TestParseEvaluatesAdvancedOperations/2^32
+=== RUN   TestParseEvaluatesAdvancedOperations/√2
+=== RUN   TestParseEvaluatesAdvancedOperations/-√4
+=== RUN   TestParseEvaluatesAdvancedOperations/0^2
+=== RUN   TestParseEvaluatesAdvancedOperations/1^0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/0.1^3
+=== RUN   TestParseEvaluatesAdvancedOperations/1^99999999999999999999999.5
+=== RUN   TestParseEvaluatesAdvancedOperations/2^3^2
+=== RUN   TestParseEvaluatesAdvancedOperations/100/10%50
+=== RUN   TestParseEvaluatesAdvancedOperations/√4
+=== RUN   TestParseEvaluatesAdvancedOperations/8^(1/3)
+=== RUN   TestParseEvaluatesAdvancedOperations/-10%50
+=== RUN   TestParseEvaluatesAdvancedOperations/20%300
+=== RUN   TestParseEvaluatesAdvancedOperations/V0
+=== RUN   TestParseEvaluatesAdvancedOperations/√1000000
+=== RUN   TestParseEvaluatesAdvancedOperations/√0.0002
+=== RUN   TestParseEvaluatesAdvancedOperations/√200
+=== RUN   TestParseEvaluatesAdvancedOperations/√(2+2)
+=== RUN   TestParseEvaluatesAdvancedOperations/(-2)^-3
+=== RUN   TestParseEvaluatesAdvancedOperations/10%-50
+=== RUN   TestParseEvaluatesAdvancedOperations/V16^0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/10%2^3
+=== RUN   TestParseEvaluatesAdvancedOperations/0^0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/3^-1
+=== RUN   TestParseEvaluatesAdvancedOperations/-2^-2
+=== RUN   TestParseEvaluatesAdvancedOperations/1.0000001^90000
+=== RUN   TestParseEvaluatesAdvancedOperations/(-1)^1000000000000000000000001
+=== RUN   TestParseEvaluatesAdvancedOperations/5+10%50
+=== RUN   TestParseEvaluatesAdvancedOperations/√4^2
+=== RUN   TestParseEvaluatesAdvancedOperations/(-2)^2
+=== RUN   TestParseEvaluatesAdvancedOperations/0^0
+=== RUN   TestParseEvaluatesAdvancedOperations/2^0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/4^-0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/2*3^2
+=== RUN   TestParseEvaluatesAdvancedOperations/2+3^2-√9*2
+=== RUN   TestParseEvaluatesAdvancedOperations/-2^2
+=== RUN   TestParseEvaluatesAdvancedOperations/10%200
+=== RUN   TestParseEvaluatesAdvancedOperations/√√16
+=== RUN   TestParseEvaluatesAdvancedOperations/(-2)^3
+=== RUN   TestParseEvaluatesAdvancedOperations/2^0
+=== RUN   TestParseEvaluatesAdvancedOperations/(2^3)^2
+=== RUN   TestParseEvaluatesAdvancedOperations/2^3%50
+=== RUN   TestParseEvaluatesAdvancedOperations/0.5%0.5
+=== RUN   TestParseEvaluatesAdvancedOperations/2^-1
+=== RUN   TestParseEvaluatesAdvancedOperations/√0.25
+=== RUN   TestParseEvaluatesAdvancedOperations/2^√4
+=== RUN   TestParseEvaluatesAdvancedOperations/50%10%10
+=== RUN   TestParseEvaluatesAdvancedOperations/√(3^2+4^2)
+=== RUN   TestParseEvaluatesAdvancedOperations/√4*4
+=== RUN   TestParseEvaluatesAdvancedOperations/1.5^2
+=== RUN   TestParseEvaluatesAdvancedOperations/2^3*2
+=== RUN   TestParseEvaluatesAdvancedOperations/10%(2+3)
+--- PASS: TestParseEvaluatesAdvancedOperations (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/V4*4 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^32 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/-√4 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/0^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/1^0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/0.1^3 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/1^99999999999999999999999.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^3^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/100/10%50 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√4 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/8^(1/3) (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/-10%50 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/20%300 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/V0 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√1000000 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√0.0002 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√200 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√(2+2) (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/(-2)^-3 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/10%-50 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/V16^0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/10%2^3 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/0^0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/3^-1 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/-2^-2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/1.0000001^90000 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/(-1)^1000000000000000000000001 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/5+10%50 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√4^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/(-2)^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/0^0 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/4^-0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2*3^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2+3^2-√9*2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/-2^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/10%200 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√√16 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/(-2)^3 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^0 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/(2^3)^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^3%50 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/0.5%0.5 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^-1 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√0.25 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^√4 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/50%10%10 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√(3^2+4^2) (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/√4*4 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/1.5^2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/2^3*2 (0.00s)
+    --- PASS: TestParseEvaluatesAdvancedOperations/10%(2+3) (0.00s)
+=== RUN   TestParseEvaluatesPowersAtTheLimitBoundary
+=== RUN   TestParseEvaluatesPowersAtTheLimitBoundary/10^100000
+=== RUN   TestParseEvaluatesPowersAtTheLimitBoundary/0.1^-100000
+=== RUN   TestParseEvaluatesPowersAtTheLimitBoundary/2^332192
+=== RUN   TestParseEvaluatesPowersAtTheLimitBoundary/(-10)^99999
+--- PASS: TestParseEvaluatesPowersAtTheLimitBoundary (0.01s)
+    --- PASS: TestParseEvaluatesPowersAtTheLimitBoundary/10^100000 (0.00s)
+    --- PASS: TestParseEvaluatesPowersAtTheLimitBoundary/0.1^-100000 (0.00s)
+    --- PASS: TestParseEvaluatesPowersAtTheLimitBoundary/2^332192 (0.01s)
+    --- PASS: TestParseEvaluatesPowersAtTheLimitBoundary/(-10)^99999 (0.00s)
+=== RUN   TestParseReportsUnprocessableOnEval
+=== RUN   TestParseReportsUnprocessableOnEval/V(2-5)
+=== RUN   TestParseReportsUnprocessableOnEval/10^-100001
+=== RUN   TestParseReportsUnprocessableOnEval/0.99999999999999999999^-100000
+=== RUN   TestParseReportsUnprocessableOnEval/9^9999999999999999999999999999
+=== RUN   TestParseReportsUnprocessableOnEval/2^332193
+=== RUN   TestParseReportsUnprocessableOnEval/2^3^20
+=== RUN   TestParseReportsUnprocessableOnEval/10^100000.5
+=== RUN   TestParseReportsUnprocessableOnEval/√-0.0001
+=== RUN   TestParseReportsUnprocessableOnEval/(-8)^0.5
+=== RUN   TestParseReportsUnprocessableOnEval/1+√-1
+=== RUN   TestParseReportsUnprocessableOnEval/(-2)^332193
+=== RUN   TestParseReportsUnprocessableOnEval/10^(10^6)
+=== RUN   TestParseReportsUnprocessableOnEval/1.1^99999999
+=== RUN   TestParseReportsUnprocessableOnEval/1.00000000000000000001^1000000
+=== RUN   TestParseReportsUnprocessableOnEval/√-4
+=== RUN   TestParseReportsUnprocessableOnEval/(-8)^(1/3)
+=== RUN   TestParseReportsUnprocessableOnEval/10^100001
+=== RUN   TestParseReportsUnprocessableOnEval/0.1^100001
+--- PASS: TestParseReportsUnprocessableOnEval (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/V(2-5) (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/10^-100001 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/0.99999999999999999999^-100000 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/9^9999999999999999999999999999 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/2^332193 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/2^3^20 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/10^100000.5 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/√-0.0001 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/(-8)^0.5 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/1+√-1 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/(-2)^332193 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/10^(10^6) (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/1.1^99999999 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/1.00000000000000000001^1000000 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/√-4 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/(-8)^(1/3) (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/10^100001 (0.00s)
+    --- PASS: TestParseReportsUnprocessableOnEval/0.1^100001 (0.00s)
+=== RUN   TestParseReportsDivisionByZeroInPowers
+=== RUN   TestParseReportsDivisionByZeroInPowers/0^-1
+=== RUN   TestParseReportsDivisionByZeroInPowers/0^-0.5
+=== RUN   TestParseReportsDivisionByZeroInPowers/(1-1)^-2
+=== RUN   TestParseReportsDivisionByZeroInPowers/(1/0)^2
+=== RUN   TestParseReportsDivisionByZeroInPowers/2^(1/0)
+=== RUN   TestParseReportsDivisionByZeroInPowers/√(1/0)
+--- PASS: TestParseReportsDivisionByZeroInPowers (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/0^-1 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/0^-0.5 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/(1-1)^-2 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/(1/0)^2 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/2^(1/0) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroInPowers/√(1/0) (0.00s)
+=== RUN   TestPowerHonoursTheConfiguredLimit
+--- PASS: TestPowerHonoursTheConfiguredLimit (0.00s)
+=== RUN   TestUnprocessableErrorsCarryTheirMessage
+--- PASS: TestUnprocessableErrorsCarryTheirMessage (0.00s)
+=== RUN   TestParseRejectsInvalidAdvancedExpressions
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2%%3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/√--4
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/(2^)
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2*^3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2+%3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/√*4
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2^--3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2√4
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2^(3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/3*
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/(2)√4
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/20%
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/^2
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2^*3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2%^3
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/√^4
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/(√)
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/√(
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/√
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/V
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2^
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/%2
+=== RUN   TestParseRejectsInvalidAdvancedExpressions/2^^3
+--- PASS: TestParseRejectsInvalidAdvancedExpressions (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2%%3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/√--4 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/(2^) (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2*^3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2+%3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/√*4 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2^--3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2√4 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2^(3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/3* (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/(2)√4 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/20% (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/^2 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2^*3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2%^3 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/√^4 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/(√) (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/√( (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/√ (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/V (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2^ (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/%2 (0.00s)
+    --- PASS: TestParseRejectsInvalidAdvancedExpressions/2^^3 (0.00s)
+=== RUN   TestLexTreatsVAndRadicalAsTheSameToken
+--- PASS: TestLexTreatsVAndRadicalAsTheSameToken (0.00s)
+=== RUN   TestPowerRefusesExponentsBeyondDecimalRange
+=== RUN   TestPowerRefusesExponentsBeyondDecimalRange/(1+10^-400)^(10^390)
+=== RUN   TestPowerRefusesExponentsBeyondDecimalRange/(1-10^-400)^(10^390)
+=== RUN   TestPowerRefusesExponentsBeyondDecimalRange/(1+10^-1000)^(-(10^990))
+--- PASS: TestPowerRefusesExponentsBeyondDecimalRange (0.00s)
+    --- PASS: TestPowerRefusesExponentsBeyondDecimalRange/(1+10^-400)^(10^390) (0.00s)
+    --- PASS: TestPowerRefusesExponentsBeyondDecimalRange/(1-10^-400)^(10^390) (0.00s)
+    --- PASS: TestPowerRefusesExponentsBeyondDecimalRange/(1+10^-1000)^(-(10^990)) (0.00s)
+=== RUN   TestParseKeepsIntegerPowersExactUpToTheLimit
+--- PASS: TestParseKeepsIntegerPowersExactUpToTheLimit (0.00s)
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/9^99999*9^99999*9^99999*9^9999
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/1.1^33000*1.1^33000*1.1^33000*
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/10^-99999*10^-99999*10^-99999
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/10^99999*10^99999
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/10^100000+10^-100000
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/10^-99999/10^99999
+=== RUN   TestParseRefusesResultsThatOutgrowTheLimit/2^332192%2^332192
+--- PASS: TestParseRefusesResultsThatOutgrowTheLimit (0.09s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/9^99999*9^99999*9^99999*9^9999 (0.01s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/1.1^33000*1.1^33000*1.1^33000* (0.01s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/10^-99999*10^-99999*10^-99999 (0.02s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/10^99999*10^99999 (0.01s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/10^100000+10^-100000 (0.02s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/10^-99999/10^99999 (0.01s)
+    --- PASS: TestParseRefusesResultsThatOutgrowTheLimit/2^332192%2^332192 (0.01s)
+=== RUN   TestParseRefusesExpressionsThatSpendTheExactWorkBudget
+--- PASS: TestParseRefusesExpressionsThatSpendTheExactWorkBudget (0.04s)
+=== RUN   TestWorkIsSharedByEveryPowerOfOneExpressionOnly
+--- PASS: TestWorkIsSharedByEveryPowerOfOneExpressionOnly (0.00s)
+=== RUN   TestParseKeepsLargeLiteralArithmeticUnderSmallLimits
+--- PASS: TestParseKeepsLargeLiteralArithmeticUnderSmallLimits (0.00s)
+=== RUN   TestParseEvaluatesValidExpressions
+=== RUN   TestParseEvaluatesValidExpressions/1.5*2
+=== RUN   TestParseEvaluatesValidExpressions/-.5
+=== RUN   TestParseEvaluatesValidExpressions/2+-2
+=== RUN   TestParseEvaluatesValidExpressions/1/3
+=== RUN   TestParseEvaluatesValidExpressions/5/3
+=== RUN   TestParseEvaluatesValidExpressions/1/3/1000000000*1000000000*3
+=== RUN   TestParseEvaluatesValidExpressions/7
+=== RUN   TestParseEvaluatesValidExpressions/0
+=== RUN   TestParseEvaluatesValidExpressions/.5
+=== RUN   TestParseEvaluatesValidExpressions/8/2*4
+=== RUN   TestParseEvaluatesValidExpressions/(2+3)*4
+=== RUN   TestParseEvaluatesValidExpressions/-(2)*3
+=== RUN   TestParseEvaluatesValidExpressions/1/3*3
+=== RUN   TestParseEvaluatesValidExpressions/10000000000000000000000000000000000000000/3
+=== RUN   TestParseEvaluatesValidExpressions/9-4
+=== RUN   TestParseEvaluatesValidExpressions/((2))
+=== RUN   TestParseEvaluatesValidExpressions/-5
+=== RUN   TestParseEvaluatesValidExpressions/1/100000000000000000000000000000000000*100000000000000000000000000000000000
+=== RUN   TestParseEvaluatesValidExpressions/2*3+4
+=== RUN   TestParseEvaluatesValidExpressions/2--2
+=== RUN   TestParseEvaluatesValidExpressions/-2*-3
+=== RUN   TestParseEvaluatesValidExpressions/-1/-3
+=== RUN   TestParseEvaluatesValidExpressions/6*7
+=== RUN   TestParseEvaluatesValidExpressions/2*(3+4)
+=== RUN   TestParseEvaluatesValidExpressions/2*-3
+=== RUN   TestParseEvaluatesValidExpressions/(-3)
+=== RUN   TestParseEvaluatesValidExpressions/10/3
+=== RUN   TestParseEvaluatesValidExpressions/99999999999999999999*99999999999999999999
+=== RUN   TestParseEvaluatesValidExpressions/8/2
+=== RUN   TestParseEvaluatesValidExpressions/007
+=== RUN   TestParseEvaluatesValidExpressions/.5+.5
+=== RUN   TestParseEvaluatesValidExpressions/100/10/5
+=== RUN   TestParseEvaluatesValidExpressions/((1+2)*(3+4))
+=== RUN   TestParseEvaluatesValidExpressions/-(2+3)
+=== RUN   TestParseEvaluatesValidExpressions/1/700
+=== RUN   TestParseEvaluatesValidExpressions/0/5
+=== RUN   TestParseEvaluatesValidExpressions/0.1+0.2
+=== RUN   TestParseEvaluatesValidExpressions/2/-4
+=== RUN   TestParseEvaluatesValidExpressions/-(-3)
+=== RUN   TestParseEvaluatesValidExpressions/-2/3
+=== RUN   TestParseEvaluatesValidExpressions/100/7
+=== RUN   TestParseEvaluatesValidExpressions/4+5
+=== RUN   TestParseEvaluatesValidExpressions/2+3*4
+=== RUN   TestParseEvaluatesValidExpressions/10-4-3
+=== RUN   TestParseEvaluatesValidExpressions/2-3*4/2
+=== RUN   TestParseEvaluatesValidExpressions/2/3
+=== RUN   TestParseEvaluatesValidExpressions/0.0000000000000000001*10
+--- PASS: TestParseEvaluatesValidExpressions (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1.5*2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2+-2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/5/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3/1000000000*1000000000*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/8/2*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/(2+3)*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(2)*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10000000000000000000000000000000000000000/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/9-4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/((2)) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/100000000000000000000000000000000000*100000000000000000000000000000000000 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*3+4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2--2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-2*-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-1/-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/6*7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*(3+4) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/(-3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/99999999999999999999*99999999999999999999 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/8/2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/007 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/.5+.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/100/10/5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/((1+2)*(3+4)) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(2+3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/700 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0/5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0.1+0.2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2/-4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(-3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-2/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/100/7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/4+5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2+3*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10-4-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2-3*4/2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0.0000000000000000001*10 (0.00s)
+=== RUN   TestParseReportsDivisionByZeroOnEval
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0
+=== RUN   TestParseReportsDivisionByZeroOnEval/0/0
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/(2-2)
+=== RUN   TestParseReportsDivisionByZeroOnEval/(1/0)*0
+=== RUN   TestParseReportsDivisionByZeroOnEval/-(1/0)
+=== RUN   TestParseReportsDivisionByZeroOnEval/0*(1/0)
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0+1
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/-0
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0.000
+--- PASS: TestParseReportsDivisionByZeroOnEval (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/0/0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/(2-2) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/(1/0)*0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/-(1/0) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/0*(1/0) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0+1 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/-0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0.000 (0.00s)
+=== RUN   TestParseRejectsInvalidExpressions
+=== RUN   TestParseRejectsInvalidExpressions/()
+=== RUN   TestParseRejectsInvalidExpressions/#00
+=== RUN   TestParseRejectsInvalidExpressions/5.
+=== RUN   TestParseRejectsInvalidExpressions/2*/3
+=== RUN   TestParseRejectsInvalidExpressions/--3
+=== RUN   TestParseRejectsInvalidExpressions/(*3)
+=== RUN   TestParseRejectsInvalidExpressions/)2(
+=== RUN   TestParseRejectsInvalidExpressions/too_long
+=== RUN   TestParseRejectsInvalidExpressions/x4
+=== RUN   TestParseRejectsInvalidExpressions/3*
+=== RUN   TestParseRejectsInvalidExpressions/2++3
+=== RUN   TestParseRejectsInvalidExpressions/2-*3
+=== RUN   TestParseRejectsInvalidExpressions/2-+3
+=== RUN   TestParseRejectsInvalidExpressions/2)
+=== RUN   TestParseRejectsInvalidExpressions//3
+=== RUN   TestParseRejectsInvalidExpressions/2(3)
+=== RUN   TestParseRejectsInvalidExpressions/(2))+(3
+=== RUN   TestParseRejectsInvalidExpressions/2a3
+=== RUN   TestParseRejectsInvalidExpressions/2&3
+=== RUN   TestParseRejectsInvalidExpressions/5!
+=== RUN   TestParseRejectsInvalidExpressions/2---2
+=== RUN   TestParseRejectsInvalidExpressions/(2)(3)
+=== RUN   TestParseRejectsInvalidExpressions/2*()
+=== RUN   TestParseRejectsInvalidExpressions/(2
+=== RUN   TestParseRejectsInvalidExpressions/5.+1
+=== RUN   TestParseRejectsInvalidExpressions/3-
+=== RUN   TestParseRejectsInvalidExpressions/-
+=== RUN   TestParseRejectsInvalidExpressions/*3
+=== RUN   TestParseRejectsInvalidExpressions/((2)
+=== RUN   TestParseRejectsInvalidExpressions/2_+_3
+=== RUN   TestParseRejectsInvalidExpressions/+3
+=== RUN   TestParseRejectsInvalidExpressions/2*--3
+=== RUN   TestParseRejectsInvalidExpressions/1..2*+3-
+=== RUN   TestParseRejectsInvalidExpressions/1.2.3
+=== RUN   TestParseRejectsInvalidExpressions/(2+)
+=== RUN   TestParseRejectsInvalidExpressions/.
+=== RUN   TestParseRejectsInvalidExpressions/(2)3
+--- PASS: TestParseRejectsInvalidExpressions (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/() (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/#00 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5. (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*/3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/--3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(*3) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/)2( (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/too_long (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/x4 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/3* (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2++3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2-*3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2-+3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions//3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2(3) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2))+(3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2a3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2&3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5! (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2---2 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2)(3) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*() (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5.+1 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/3- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/*3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/((2) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2_+_3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/+3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*--3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/1..2*+3- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/1.2.3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2+) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/. (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2)3 (0.00s)
+=== RUN   TestParseAcceptsExpressionAtMaxLength
+--- PASS: TestParseAcceptsExpressionAtMaxLength (0.00s)
+=== RUN   TestLexReportsMultibyteCharactersByRunePosition
+--- PASS: TestLexReportsMultibyteCharactersByRunePosition (0.00s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/expression	0.520s
+=== RUN   TestValidateRespondsOkWhenServiceFindsNoErrors
+--- PASS: TestValidateRespondsOkWhenServiceFindsNoErrors (0.00s)
+=== RUN   TestValidateRespondsBadRequestWithServiceErrors
+--- PASS: TestValidateRespondsBadRequestWithServiceErrors (0.00s)
+=== RUN   TestValidatePassesEmptyExpressionToService
+--- PASS: TestValidatePassesEmptyExpressionToService (0.00s)
+=== RUN   TestHandlersRejectMalformedBodiesWithoutCallingService
+--- PASS: TestHandlersRejectMalformedBodiesWithoutCallingService (0.00s)
+=== RUN   TestCalculateRespondsWithResultAndExact
+--- PASS: TestCalculateRespondsWithResultAndExact (0.00s)
+=== RUN   TestCalculateRespondsUndefinedWithoutExact
+--- PASS: TestCalculateRespondsUndefinedWithoutExact (0.00s)
+=== RUN   TestCalculateRespondsBadRequestWithServiceErrors
+--- PASS: TestCalculateRespondsBadRequestWithServiceErrors (0.00s)
+=== RUN   TestCalculateRespondsInternalErrorOnUnexpectedFailure
+--- PASS: TestCalculateRespondsInternalErrorOnUnexpectedFailure (0.00s)
+=== RUN   TestValidateRespondsUnprocessableOnEvaluationRefusal
+=== RUN   TestValidateRespondsUnprocessableOnEvaluationRefusal/10^100001
+=== RUN   TestValidateRespondsUnprocessableOnEvaluationRefusal/√-4
+--- PASS: TestValidateRespondsUnprocessableOnEvaluationRefusal (0.00s)
+    --- PASS: TestValidateRespondsUnprocessableOnEvaluationRefusal/10^100001 (0.00s)
+    --- PASS: TestValidateRespondsUnprocessableOnEvaluationRefusal/√-4 (0.00s)
+=== RUN   TestValidateRespondsInternalErrorOnUnexpectedFailure
+--- PASS: TestValidateRespondsInternalErrorOnUnexpectedFailure (0.00s)
+=== RUN   TestCalculateRespondsUnprocessableOnEvaluationRefusal
+=== RUN   TestCalculateRespondsUnprocessableOnEvaluationRefusal/2^332193
+=== RUN   TestCalculateRespondsUnprocessableOnEvaluationRefusal/(-8)^0.5
+--- PASS: TestCalculateRespondsUnprocessableOnEvaluationRefusal (0.00s)
+    --- PASS: TestCalculateRespondsUnprocessableOnEvaluationRefusal/2^332193 (0.00s)
+    --- PASS: TestCalculateRespondsUnprocessableOnEvaluationRefusal/(-8)^0.5 (0.00s)
+=== RUN   TestHealthHandlerGetRespondsWithServiceStatus
+--- PASS: TestHealthHandlerGetRespondsWithServiceStatus (0.00s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/handler	0.394s
+=== RUN   TestRouterRoutesHealthzToHealthHandler
+[GIN] 2026/11/24 - 21:54:33 | 418 |    108µs |       192.0.2.1 | GET      "/api/v1/healthz"
+--- PASS: TestRouterRoutesHealthzToHealthHandler (0.00s)
+=== RUN   TestRouterRoutesValidateToCalculatorHandler
+[GIN] 2026/11/24 - 21:54:33 | 202 | 18.125µs |       192.0.2.1 | POST     "/api/v1/validate"
+--- PASS: TestRouterRoutesValidateToCalculatorHandler (0.00s)
+=== RUN   TestRouterRoutesCalculateToCalculatorHandler
+[GIN] 2026/11/24 - 21:54:33 | 201 |   16.5µs |       192.0.2.1 | POST     "/api/v1/calculate"
+--- PASS: TestRouterRoutesCalculateToCalculatorHandler (0.00s)
+=== RUN   TestRouterReturnsNotFoundForUnknownRoute
+[GIN] 2026/11/24 - 21:54:33 | 404 |     83ns |       192.0.2.1 | GET      "/api/v1/unknown"
+--- PASS: TestRouterReturnsNotFoundForUnknownRoute (0.00s)
+=== RUN   TestRouterRejectsWrongMethodsWithMethodNotAllowed
+[GIN] 2026/11/24 - 21:54:33 | 405 |     42ns |       192.0.2.1 | GET      "/api/v1/validate"
+[GIN] 2026/11/24 - 21:54:33 | 405 |     42ns |       192.0.2.1 | GET      "/api/v1/calculate"
+[GIN] 2026/11/24 - 21:54:33 | 405 |     42ns |       192.0.2.1 | POST     "/api/v1/healthz"
+--- PASS: TestRouterRejectsWrongMethodsWithMethodNotAllowed (0.00s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/router	0.314s
+=== RUN   TestNewConfiguresTimeoutsAndHandler
+--- PASS: TestNewConfiguresTimeoutsAndHandler (0.00s)
+=== RUN   TestRunFinishesInFlightRequestsBeforeShuttingDown
+--- PASS: TestRunFinishesInFlightRequestsBeforeShuttingDown (0.00s)
+=== RUN   TestRunReturnsServeErrorWhenListenerFails
+--- PASS: TestRunReturnsServeErrorWhenListenerFails (0.00s)
+=== RUN   TestRunReturnsShutdownErrorWhenDrainTimesOut
+--- PASS: TestRunReturnsShutdownErrorWhenDrainTimesOut (0.01s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/server	0.252s
+=== RUN   TestValidateReturnsParserErrors
+--- PASS: TestValidateReturnsParserErrors (0.00s)
+=== RUN   TestValidateEvaluatesParsableInput
+--- PASS: TestValidateEvaluatesParsableInput (0.00s)
+=== RUN   TestValidateAcceptsDivisionByZero
+--- PASS: TestValidateAcceptsDivisionByZero (0.00s)
+=== RUN   TestValidateReturnsEvaluationErrors
+=== RUN   TestValidateReturnsEvaluationErrors/imaginary_numbers_not_supported
+=== RUN   TestValidateReturnsEvaluationErrors/power_operation_refused_due_to_computation_limit_exceeded
+=== RUN   TestValidateReturnsEvaluationErrors/boom
+--- PASS: TestValidateReturnsEvaluationErrors (0.00s)
+    --- PASS: TestValidateReturnsEvaluationErrors/imaginary_numbers_not_supported (0.00s)
+    --- PASS: TestValidateReturnsEvaluationErrors/power_operation_refused_due_to_computation_limit_exceeded (0.00s)
+    --- PASS: TestValidateReturnsEvaluationErrors/boom (0.00s)
+=== RUN   TestCalculateReturnsParserErrorsWithoutEvaluating
+--- PASS: TestCalculateReturnsParserErrorsWithoutEvaluating (0.00s)
+=== RUN   TestCalculateRoundsResultAndKeepsExactValue
+--- PASS: TestCalculateRoundsResultAndKeepsExactValue (0.00s)
+=== RUN   TestCalculateRoundsHalfAwayFromZero
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.00000000000000005
+=== RUN   TestCalculateRoundsHalfAwayFromZero/-0.00000000000000005
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.00000000000000004
+=== RUN   TestCalculateRoundsHalfAwayFromZero/-0.00000000000000004
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.99999999999999995
+=== RUN   TestCalculateRoundsHalfAwayFromZero/2.50000000000000000
+=== RUN   TestCalculateRoundsHalfAwayFromZero/12345678901234567890
+--- PASS: TestCalculateRoundsHalfAwayFromZero (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.00000000000000005 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/-0.00000000000000005 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.00000000000000004 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/-0.00000000000000004 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.99999999999999995 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/2.50000000000000000 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/12345678901234567890 (0.00s)
+=== RUN   TestCalculateReturnsUndefinedOnDivisionByZero
+--- PASS: TestCalculateReturnsUndefinedOnDivisionByZero (0.00s)
+=== RUN   TestCalculatePropagatesEvaluationErrors
+=== RUN   TestCalculatePropagatesEvaluationErrors/imaginary_numbers_not_supported
+=== RUN   TestCalculatePropagatesEvaluationErrors/power_operation_refused_due_to_computation_limit_exceeded
+=== RUN   TestCalculatePropagatesEvaluationErrors/boom
+--- PASS: TestCalculatePropagatesEvaluationErrors (0.00s)
+    --- PASS: TestCalculatePropagatesEvaluationErrors/imaginary_numbers_not_supported (0.00s)
+    --- PASS: TestCalculatePropagatesEvaluationErrors/power_operation_refused_due_to_computation_limit_exceeded (0.00s)
+    --- PASS: TestCalculatePropagatesEvaluationErrors/boom (0.00s)
+=== RUN   TestCalculateProofCasesWithRealParser
+=== RUN   TestCalculateProofCasesWithRealParser/√2
+=== RUN   TestCalculateProofCasesWithRealParser/2^0.5^2
+=== RUN   TestCalculateProofCasesWithRealParser/0^-1
+=== RUN   TestCalculateProofCasesWithRealParser/8/2*4
+=== RUN   TestCalculateProofCasesWithRealParser/2*-3
+=== RUN   TestCalculateProofCasesWithRealParser/0.3333333333333333333333333333333333*3
+=== RUN   TestCalculateProofCasesWithRealParser/1/0
+=== RUN   TestCalculateProofCasesWithRealParser/V4*4
+=== RUN   TestCalculateProofCasesWithRealParser/100/10%50
+=== RUN   TestCalculateProofCasesWithRealParser/10%2^3
+=== RUN   TestCalculateProofCasesWithRealParser/20%300
+=== RUN   TestCalculateProofCasesWithRealParser/1/3
+=== RUN   TestCalculateProofCasesWithRealParser/-2^2
+=== RUN   TestCalculateProofCasesWithRealParser/2^-1
+=== RUN   TestCalculateProofCasesWithRealParser/2^32
+=== RUN   TestCalculateProofCasesWithRealParser/√2*√2
+=== RUN   TestCalculateProofCasesWithRealParser/0^0
+=== RUN   TestCalculateProofCasesWithRealParser/2/3
+=== RUN   TestCalculateProofCasesWithRealParser/0.1+0.2
+=== RUN   TestCalculateProofCasesWithRealParser/2+3*4
+=== RUN   TestCalculateProofCasesWithRealParser/0.3333333333333333*3
+=== RUN   TestCalculateProofCasesWithRealParser/2^3^2
+=== RUN   TestCalculateProofCasesWithRealParser/10%200
+=== RUN   TestCalculateProofCasesWithRealParser/5+10%50
+=== RUN   TestCalculateProofCasesWithRealParser/1/3*3
+=== RUN   TestCalculateProofCasesWithRealParser/-(2+3)
+=== RUN   TestCalculateProofCasesWithRealParser/2--2
+=== RUN   TestCalculateProofCasesWithRealParser/V16^0.5
+--- PASS: TestCalculateProofCasesWithRealParser (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/√2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2^0.5^2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0^-1 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/8/2*4 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2*-3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.3333333333333333333333333333333333*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/0 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/V4*4 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/100/10%50 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/10%2^3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/20%300 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/-2^2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2^-1 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2^32 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/√2*√2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0^0 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2/3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.1+0.2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2+3*4 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.3333333333333333*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2^3^2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/10%200 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/5+10%50 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/3*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/-(2+3) (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2--2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/V16^0.5 (0.00s)
+=== RUN   TestCalculateRefusesUnprocessableWithRealParser
+=== RUN   TestCalculateRefusesUnprocessableWithRealParser/√-4
+=== RUN   TestCalculateRefusesUnprocessableWithRealParser/(-8)^0.5
+=== RUN   TestCalculateRefusesUnprocessableWithRealParser/10^100001
+=== RUN   TestCalculateRefusesUnprocessableWithRealParser/2^332193
+--- PASS: TestCalculateRefusesUnprocessableWithRealParser (0.00s)
+    --- PASS: TestCalculateRefusesUnprocessableWithRealParser/√-4 (0.00s)
+    --- PASS: TestCalculateRefusesUnprocessableWithRealParser/(-8)^0.5 (0.00s)
+    --- PASS: TestCalculateRefusesUnprocessableWithRealParser/10^100001 (0.00s)
+    --- PASS: TestCalculateRefusesUnprocessableWithRealParser/2^332193 (0.00s)
+=== RUN   TestCalculateRejectsWithRealParser
+=== RUN   TestCalculateRejectsWithRealParser/--3
+=== RUN   TestCalculateRejectsWithRealParser/2(3)
+=== RUN   TestCalculateRejectsWithRealParser/3*
+=== RUN   TestCalculateRejectsWithRealParser/5.
+=== RUN   TestCalculateRejectsWithRealParser/(2
+=== RUN   TestCalculateRejectsWithRealParser/#00
+=== RUN   TestCalculateRejectsWithRealParser/2^
+=== RUN   TestCalculateRejectsWithRealParser/20%
+=== RUN   TestCalculateRejectsWithRealParser/√
+=== RUN   TestCalculateRejectsWithRealParser/2^^3
+=== RUN   TestCalculateRejectsWithRealParser/2√4
+--- PASS: TestCalculateRejectsWithRealParser (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/--3 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/2(3) (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/3* (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/5. (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/(2 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/#00 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/2^ (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/20% (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/√ (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/2^^3 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/2√4 (0.00s)
+=== RUN   TestHealthServiceCheckReturnsOk
+--- PASS: TestHealthServiceCheckReturnsOk (0.00s)
+PASS
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/service	0.221s

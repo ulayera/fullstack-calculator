@@ -1,0 +1,10 @@
+
+Running 1 test using 1 worker
+
+ Container fullstack-calculator-backend-1 Stopping 
+ Container fullstack-calculator-backend-1 Stopped 
+ Container fullstack-calculator-backend-1 Starting 
+ Container fullstack-calculator-backend-1 Started 
+  ✓  1 [desktop-chrome] › tests/zz-outage.spec.ts:4:1 › real backend outage disables the calculator and recovers (6.6s)
+
+  1 passed (7.1s)

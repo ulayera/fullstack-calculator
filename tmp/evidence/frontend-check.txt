@@ -1,0 +1,46 @@
+
+> fullstack-calculator-frontend@0.0.0 check
+> npm run lint && npm run coverage && npm run build
+
+
+> fullstack-calculator-frontend@0.0.0 lint
+> eslint . --max-warnings=0
+
+
+> fullstack-calculator-frontend@0.0.0 coverage
+> vitest run --coverage
+
+
+ RUN  v5.1.1 /Users/ulayera/projects/fullstack-calculator/frontend
+      Coverage enabled with v8
+
+
+ Test Files  8 passed (8)
+      Tests  161 passed (161)
+   Start at  20:07:44
+   Duration  1.43s (environment 54%, tests 25%, setup 15%, worker 3%, transform 2%, import 2%)
+
+ % Coverage report from v8
+No files with missing coverage.
+10 files fully covered.
+
+=============================== Coverage summary ===============================
+Statements   : 100% ( 242/242 )
+Branches     : 100% ( 149/149 )
+Functions    : 100% ( 51/51 )
+Lines        : 100% ( 208/208 )
+================================================================================
+
+> fullstack-calculator-frontend@0.0.0 build
+> tsc -b && vite build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 26 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   0.47 kB │ gzip:  0.30 kB
+dist/assets/index-6WQ-nHQO.css    2.85 kB │ gzip:  1.10 kB
+dist/assets/index-DjhPip_6.js   226.12 kB │ gzip: 71.17 kB
+
+✓ built in 90ms

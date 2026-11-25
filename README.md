@@ -125,3 +125,14 @@ A coverage snapshot for the assignment is committed in [docs/coverage-report](do
 ```
 
 CI (`.github/workflows/ci.yml`) runs the backend and frontend checks, lints the OpenAPI spec, then runs the e2e suite against the production compose stack.
+
+# User technical decisions (this is manually written)
+
+- Used Docker compose instead of Dockerfile to have sparate containers, manage network between them and it's easier to manage than 1 or 2 Dockerfiles.
+- While I don't have Go experience, found that Gin is more popular and lightweight.
+- Support for Iphone 17 viewport as a concrete way to validate
+- Rounding only final results to keep precision.
+- Returning a string representation of the full precision result so reusing previous ans doens't use the rounded version hence losing precision.
+- Tried to incorporate parentheses but kept many things like implicit multiplication out for simplicity.
+- Also for simplicity i just show errors live even on imcomplete expressions (helped me debug and test, easy to change behavior)
+- I asked the agent to gitignore tmp, but will commit it with as a way to see the process of validating, it's useful to visually confirm the test cases.

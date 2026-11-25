@@ -1,0 +1,357 @@
+?   	github.com/ulayera/fullstack-calculator/backend/cmd/server	[no test files]
+=== RUN   TestParseEvaluatesValidExpressions
+=== RUN   TestParseEvaluatesValidExpressions/-(-3)
+=== RUN   TestParseEvaluatesValidExpressions/-2/3
+=== RUN   TestParseEvaluatesValidExpressions/-1/-3
+=== RUN   TestParseEvaluatesValidExpressions/1/3/1000000000*1000000000*3
+=== RUN   TestParseEvaluatesValidExpressions/1.5*2
+=== RUN   TestParseEvaluatesValidExpressions/(2+3)*4
+=== RUN   TestParseEvaluatesValidExpressions/5/3
+=== RUN   TestParseEvaluatesValidExpressions/100/7
+=== RUN   TestParseEvaluatesValidExpressions/1/700
+=== RUN   TestParseEvaluatesValidExpressions/1/100000000000000000000000000000000000*100000000000000000000000000000000000
+=== RUN   TestParseEvaluatesValidExpressions/10000000000000000000000000000000000000000/3
+=== RUN   TestParseEvaluatesValidExpressions/9-4
+=== RUN   TestParseEvaluatesValidExpressions/7
+=== RUN   TestParseEvaluatesValidExpressions/-2*-3
+=== RUN   TestParseEvaluatesValidExpressions/(-3)
+=== RUN   TestParseEvaluatesValidExpressions/10-4-3
+=== RUN   TestParseEvaluatesValidExpressions/((1+2)*(3+4))
+=== RUN   TestParseEvaluatesValidExpressions/-5
+=== RUN   TestParseEvaluatesValidExpressions/2*-3
+=== RUN   TestParseEvaluatesValidExpressions/1/3
+=== RUN   TestParseEvaluatesValidExpressions/1/3*3
+=== RUN   TestParseEvaluatesValidExpressions/10/3
+=== RUN   TestParseEvaluatesValidExpressions/99999999999999999999*99999999999999999999
+=== RUN   TestParseEvaluatesValidExpressions/4+5
+=== RUN   TestParseEvaluatesValidExpressions/2/-4
+=== RUN   TestParseEvaluatesValidExpressions/-(2)*3
+=== RUN   TestParseEvaluatesValidExpressions/.5+.5
+=== RUN   TestParseEvaluatesValidExpressions/2*3+4
+=== RUN   TestParseEvaluatesValidExpressions/-(2+3)
+=== RUN   TestParseEvaluatesValidExpressions/0/5
+=== RUN   TestParseEvaluatesValidExpressions/.5
+=== RUN   TestParseEvaluatesValidExpressions/100/10/5
+=== RUN   TestParseEvaluatesValidExpressions/2*(3+4)
+=== RUN   TestParseEvaluatesValidExpressions/2/3
+=== RUN   TestParseEvaluatesValidExpressions/0.0000000000000000001*10
+=== RUN   TestParseEvaluatesValidExpressions/6*7
+=== RUN   TestParseEvaluatesValidExpressions/8/2
+=== RUN   TestParseEvaluatesValidExpressions/007
+=== RUN   TestParseEvaluatesValidExpressions/0.1+0.2
+=== RUN   TestParseEvaluatesValidExpressions/8/2*4
+=== RUN   TestParseEvaluatesValidExpressions/2-3*4/2
+=== RUN   TestParseEvaluatesValidExpressions/((2))
+=== RUN   TestParseEvaluatesValidExpressions/-.5
+=== RUN   TestParseEvaluatesValidExpressions/0
+=== RUN   TestParseEvaluatesValidExpressions/2+3*4
+=== RUN   TestParseEvaluatesValidExpressions/2--2
+=== RUN   TestParseEvaluatesValidExpressions/2+-2
+--- PASS: TestParseEvaluatesValidExpressions (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(-3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-2/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-1/-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3/1000000000*1000000000*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1.5*2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/(2+3)*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/5/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/100/7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/700 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/100000000000000000000000000000000000*100000000000000000000000000000000000 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10000000000000000000000000000000000000000/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/9-4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-2*-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/(-3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10-4-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/((1+2)*(3+4)) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*-3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/1/3*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/10/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/99999999999999999999*99999999999999999999 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/4+5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2/-4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(2)*3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/.5+.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*3+4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-(2+3) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0/5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/100/10/5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2*(3+4) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2/3 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0.0000000000000000001*10 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/6*7 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/8/2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/007 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0.1+0.2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/8/2*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2-3*4/2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/((2)) (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/-.5 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/0 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2+3*4 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2--2 (0.00s)
+    --- PASS: TestParseEvaluatesValidExpressions/2+-2 (0.00s)
+=== RUN   TestParseReportsDivisionByZeroOnEval
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0
+=== RUN   TestParseReportsDivisionByZeroOnEval/0/0
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/(2-2)
+=== RUN   TestParseReportsDivisionByZeroOnEval/(1/0)*0
+=== RUN   TestParseReportsDivisionByZeroOnEval/-(1/0)
+=== RUN   TestParseReportsDivisionByZeroOnEval/0*(1/0)
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0+1
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/-0
+=== RUN   TestParseReportsDivisionByZeroOnEval/1/0.000
+--- PASS: TestParseReportsDivisionByZeroOnEval (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/0/0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/(2-2) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/(1/0)*0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/-(1/0) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/0*(1/0) (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0+1 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/-0 (0.00s)
+    --- PASS: TestParseReportsDivisionByZeroOnEval/1/0.000 (0.00s)
+=== RUN   TestParseRejectsInvalidExpressions
+=== RUN   TestParseRejectsInvalidExpressions/(2)(3)
+=== RUN   TestParseRejectsInvalidExpressions/)2(
+=== RUN   TestParseRejectsInvalidExpressions/(2))+(3
+=== RUN   TestParseRejectsInvalidExpressions/.
+=== RUN   TestParseRejectsInvalidExpressions/2-*3
+=== RUN   TestParseRejectsInvalidExpressions/(2)3
+=== RUN   TestParseRejectsInvalidExpressions/2*()
+=== RUN   TestParseRejectsInvalidExpressions/1..2*+3-
+=== RUN   TestParseRejectsInvalidExpressions/2---2
+=== RUN   TestParseRejectsInvalidExpressions/*3
+=== RUN   TestParseRejectsInvalidExpressions/2++3
+=== RUN   TestParseRejectsInvalidExpressions/()
+=== RUN   TestParseRejectsInvalidExpressions/2_+_3
+=== RUN   TestParseRejectsInvalidExpressions/5.
+=== RUN   TestParseRejectsInvalidExpressions/5.+1
+=== RUN   TestParseRejectsInvalidExpressions/-
+=== RUN   TestParseRejectsInvalidExpressions/2*/3
+=== RUN   TestParseRejectsInvalidExpressions/(2+)
+=== RUN   TestParseRejectsInvalidExpressions/2)
+=== RUN   TestParseRejectsInvalidExpressions/(2
+=== RUN   TestParseRejectsInvalidExpressions/((2)
+=== RUN   TestParseRejectsInvalidExpressions/2a3
+=== RUN   TestParseRejectsInvalidExpressions/5%
+=== RUN   TestParseRejectsInvalidExpressions/3*
+=== RUN   TestParseRejectsInvalidExpressions/3-
+=== RUN   TestParseRejectsInvalidExpressions/+3
+=== RUN   TestParseRejectsInvalidExpressions/--3
+=== RUN   TestParseRejectsInvalidExpressions/too_long
+=== RUN   TestParseRejectsInvalidExpressions/#00
+=== RUN   TestParseRejectsInvalidExpressions/2-+3
+=== RUN   TestParseRejectsInvalidExpressions/2(3)
+=== RUN   TestParseRejectsInvalidExpressions/2^3
+=== RUN   TestParseRejectsInvalidExpressions/1.2.3
+=== RUN   TestParseRejectsInvalidExpressions//3
+=== RUN   TestParseRejectsInvalidExpressions/2*--3
+=== RUN   TestParseRejectsInvalidExpressions/(*3)
+--- PASS: TestParseRejectsInvalidExpressions (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2)(3) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/)2( (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2))+(3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/. (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2-*3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2)3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*() (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/1..2*+3- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2---2 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/*3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2++3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/() (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2_+_3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5. (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5.+1 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*/3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2+) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(2 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/((2) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2a3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/5% (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/3* (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/3- (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/+3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/--3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/too_long (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/#00 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2-+3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2(3) (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2^3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/1.2.3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions//3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/2*--3 (0.00s)
+    --- PASS: TestParseRejectsInvalidExpressions/(*3) (0.00s)
+=== RUN   TestParseAcceptsExpressionAtMaxLength
+--- PASS: TestParseAcceptsExpressionAtMaxLength (0.00s)
+=== RUN   TestLexReportsMultibyteCharactersByRunePosition
+--- PASS: TestLexReportsMultibyteCharactersByRunePosition (0.00s)
+PASS
+coverage: 69.3% of statements in ./internal/...
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/expression	1.318s	coverage: 69.3% of statements in ./internal/...
+=== RUN   TestValidateRespondsOkWhenServiceFindsNoErrors
+--- PASS: TestValidateRespondsOkWhenServiceFindsNoErrors (0.00s)
+=== RUN   TestValidateRespondsBadRequestWithServiceErrors
+--- PASS: TestValidateRespondsBadRequestWithServiceErrors (0.00s)
+=== RUN   TestValidatePassesEmptyExpressionToService
+--- PASS: TestValidatePassesEmptyExpressionToService (0.00s)
+=== RUN   TestHandlersRejectMalformedBodiesWithoutCallingService
+--- PASS: TestHandlersRejectMalformedBodiesWithoutCallingService (0.00s)
+=== RUN   TestCalculateRespondsWithResultAndExact
+--- PASS: TestCalculateRespondsWithResultAndExact (0.00s)
+=== RUN   TestCalculateRespondsUndefinedWithoutExact
+--- PASS: TestCalculateRespondsUndefinedWithoutExact (0.00s)
+=== RUN   TestCalculateRespondsBadRequestWithServiceErrors
+--- PASS: TestCalculateRespondsBadRequestWithServiceErrors (0.00s)
+=== RUN   TestCalculateRespondsInternalErrorOnUnexpectedFailure
+--- PASS: TestCalculateRespondsInternalErrorOnUnexpectedFailure (0.00s)
+=== RUN   TestHealthHandlerGetRespondsWithServiceStatus
+--- PASS: TestHealthHandlerGetRespondsWithServiceStatus (0.00s)
+PASS
+coverage: 14.6% of statements in ./internal/...
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/handler	1.556s	coverage: 14.6% of statements in ./internal/...
+=== RUN   TestRouterRoutesHealthzToHealthHandler
+[GIN] 2026/11/24 - 20:07:41 | 418 | 275.125µs |       192.0.2.1 | GET      "/api/v1/healthz"
+--- PASS: TestRouterRoutesHealthzToHealthHandler (0.00s)
+=== RUN   TestRouterRoutesValidateToCalculatorHandler
+[GIN] 2026/11/24 - 20:07:41 | 202 | 88.375µs |       192.0.2.1 | POST     "/api/v1/validate"
+--- PASS: TestRouterRoutesValidateToCalculatorHandler (0.00s)
+=== RUN   TestRouterRoutesCalculateToCalculatorHandler
+[GIN] 2026/11/24 - 20:07:41 | 201 | 78.291µs |       192.0.2.1 | POST     "/api/v1/calculate"
+--- PASS: TestRouterRoutesCalculateToCalculatorHandler (0.00s)
+=== RUN   TestRouterReturnsNotFoundForUnknownRoute
+[GIN] 2026/11/24 - 20:07:41 | 404 |    584ns |       192.0.2.1 | GET      "/api/v1/unknown"
+--- PASS: TestRouterReturnsNotFoundForUnknownRoute (0.00s)
+=== RUN   TestRouterRejectsWrongMethodsWithMethodNotAllowed
+[GIN] 2026/11/24 - 20:07:41 | 405 |    542ns |       192.0.2.1 | POST     "/api/v1/healthz"
+[GIN] 2026/11/24 - 20:07:41 | 405 |    542ns |       192.0.2.1 | GET      "/api/v1/validate"
+[GIN] 2026/11/24 - 20:07:41 | 405 |    500ns |       192.0.2.1 | GET      "/api/v1/calculate"
+--- PASS: TestRouterRejectsWrongMethodsWithMethodNotAllowed (0.00s)
+PASS
+coverage: 4.2% of statements in ./internal/...
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/router	1.452s	coverage: 4.2% of statements in ./internal/...
+=== RUN   TestNewConfiguresTimeoutsAndHandler
+--- PASS: TestNewConfiguresTimeoutsAndHandler (0.00s)
+=== RUN   TestRunFinishesInFlightRequestsBeforeShuttingDown
+--- PASS: TestRunFinishesInFlightRequestsBeforeShuttingDown (0.00s)
+=== RUN   TestRunReturnsServeErrorWhenListenerFails
+--- PASS: TestRunReturnsServeErrorWhenListenerFails (0.00s)
+=== RUN   TestRunReturnsShutdownErrorWhenDrainTimesOut
+--- PASS: TestRunReturnsShutdownErrorWhenDrainTimesOut (0.01s)
+PASS
+coverage: 4.7% of statements in ./internal/...
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/server	1.417s	coverage: 4.7% of statements in ./internal/...
+=== RUN   TestValidateReturnsParserErrors
+--- PASS: TestValidateReturnsParserErrors (0.00s)
+=== RUN   TestValidateReturnsNoErrorsForParsableInput
+--- PASS: TestValidateReturnsNoErrorsForParsableInput (0.00s)
+=== RUN   TestCalculateReturnsParserErrorsWithoutEvaluating
+--- PASS: TestCalculateReturnsParserErrorsWithoutEvaluating (0.00s)
+=== RUN   TestCalculateRoundsResultAndKeepsExactValue
+--- PASS: TestCalculateRoundsResultAndKeepsExactValue (0.00s)
+=== RUN   TestCalculateRoundsHalfAwayFromZero
+=== RUN   TestCalculateRoundsHalfAwayFromZero/12345678901234567890
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.00000000000000005
+=== RUN   TestCalculateRoundsHalfAwayFromZero/-0.00000000000000005
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.00000000000000004
+=== RUN   TestCalculateRoundsHalfAwayFromZero/-0.00000000000000004
+=== RUN   TestCalculateRoundsHalfAwayFromZero/0.99999999999999995
+=== RUN   TestCalculateRoundsHalfAwayFromZero/2.50000000000000000
+--- PASS: TestCalculateRoundsHalfAwayFromZero (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/12345678901234567890 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.00000000000000005 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/-0.00000000000000005 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.00000000000000004 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/-0.00000000000000004 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/0.99999999999999995 (0.00s)
+    --- PASS: TestCalculateRoundsHalfAwayFromZero/2.50000000000000000 (0.00s)
+=== RUN   TestCalculateReturnsUndefinedOnDivisionByZero
+--- PASS: TestCalculateReturnsUndefinedOnDivisionByZero (0.00s)
+=== RUN   TestCalculatePropagatesUnexpectedEvaluationErrors
+--- PASS: TestCalculatePropagatesUnexpectedEvaluationErrors (0.00s)
+=== RUN   TestCalculateProofCasesWithRealParser
+=== RUN   TestCalculateProofCasesWithRealParser/2--2
+=== RUN   TestCalculateProofCasesWithRealParser/0.3333333333333333333333333333333333*3
+=== RUN   TestCalculateProofCasesWithRealParser/1/3
+=== RUN   TestCalculateProofCasesWithRealParser/1/3*3
+=== RUN   TestCalculateProofCasesWithRealParser/2+3*4
+=== RUN   TestCalculateProofCasesWithRealParser/2*-3
+=== RUN   TestCalculateProofCasesWithRealParser/0.3333333333333333*3
+=== RUN   TestCalculateProofCasesWithRealParser/1/0
+=== RUN   TestCalculateProofCasesWithRealParser/2/3
+=== RUN   TestCalculateProofCasesWithRealParser/0.1+0.2
+=== RUN   TestCalculateProofCasesWithRealParser/8/2*4
+=== RUN   TestCalculateProofCasesWithRealParser/-(2+3)
+--- PASS: TestCalculateProofCasesWithRealParser (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2--2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.3333333333333333333333333333333333*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/3*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2+3*4 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2*-3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.3333333333333333*3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/1/0 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/2/3 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/0.1+0.2 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/8/2*4 (0.00s)
+    --- PASS: TestCalculateProofCasesWithRealParser/-(2+3) (0.00s)
+=== RUN   TestCalculateRejectsWithRealParser
+=== RUN   TestCalculateRejectsWithRealParser/--3
+=== RUN   TestCalculateRejectsWithRealParser/2(3)
+=== RUN   TestCalculateRejectsWithRealParser/3*
+=== RUN   TestCalculateRejectsWithRealParser/5.
+=== RUN   TestCalculateRejectsWithRealParser/(2
+=== RUN   TestCalculateRejectsWithRealParser/#00
+--- PASS: TestCalculateRejectsWithRealParser (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/--3 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/2(3) (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/3* (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/5. (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/(2 (0.00s)
+    --- PASS: TestCalculateRejectsWithRealParser/#00 (0.00s)
+=== RUN   TestHealthServiceCheckReturnsOk
+--- PASS: TestHealthServiceCheckReturnsOk (0.00s)
+PASS
+coverage: 69.3% of statements in ./internal/...
+ok  	github.com/ulayera/fullstack-calculator/backend/internal/service	1.382s	coverage: 69.3% of statements in ./internal/...
+github.com/ulayera/fullstack-calculator/backend/internal/expression/lexer.go:32:	isNumberRune		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/lexer.go:36:	Lex			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:21:		Eval			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:29:		Eval			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:43:		Eval			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:66:		leadingExponent		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/node.go:70:		divisionPlaces		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:12:	Parse			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:21:	accept			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:35:	expression		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:46:	term			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:57:	unary			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/parser.go:64:	primary			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:11:	validate		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:28:	isOperator		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:32:	expectsOperand		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:36:	checkNumbers		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:52:	checkSequence		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/expression/validator.go:89:	checkParentheses	100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go:28:	NewCalculatorHandler	100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go:32:	bindExpression		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go:42:	Validate		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/calculator.go:54:	Calculate		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/health.go:14:		NewHealthHandler	100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/handler/health.go:18:		Get			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/router/router.go:14:		New			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/server/server.go:10:		New			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/server/server.go:20:		Run			100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/service/calculator.go:32:	NewCalculatorService	100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/service/calculator.go:36:	Validate		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/service/calculator.go:41:	Calculate		100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/service/health.go:13:		NewHealthService	100.0%
+github.com/ulayera/fullstack-calculator/backend/internal/service/health.go:17:		Check			100.0%
+total:											(statements)		100.0%
