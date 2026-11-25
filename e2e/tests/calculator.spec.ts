@@ -21,7 +21,16 @@ test.describe('calculator ui', () => {
     expect(open.x).toBeCloseTo(plus.x, 0)
     expect(clear.x).toBeGreaterThan(input.x + input.width - 1)
     expect(seven.x).toBeGreaterThan(input.x + 20)
-    await expect(page.getByTestId('advanced-column')).toBeHidden()
+    const [root, power, percent] = await Promise.all(['square root', 'power', 'percent of'].map(box))
+    await expect(page.getByTestId('advanced-column')).toBeVisible()
+    expect(root.x + root.width).toBeLessThan(seven.x)
+    expect(root.y).toBeCloseTo(seven.y, 0)
+    expect(power.y).toBeCloseTo(root.y, 0)
+    expect(power.x).toBeGreaterThan(root.x)
+    expect(percent.y).toBeGreaterThan(root.y + root.height - 1)
+    expect(percent.x).toBeCloseTo(root.x, 0)
+    expect(percent.width).toBeGreaterThan(power.x + power.width - root.x - 1)
+    await expect(calc.button('percent of')).toHaveText('% of')
     await page.screenshot({ path: shot('layout'), fullPage: true })
   })
 
@@ -65,7 +74,7 @@ test.describe('calculator ui', () => {
     const calc = calculator(page)
     await calc.open()
 
-    await calc.input.pressSequentially('a2 ^+*+3e%1..2.5')
+    await calc.input.pressSequentially('a2 &+*+3e!1..2.5')
 
     await expect(calc.input).toHaveValue('2+31.25')
     await calc.input.fill('')

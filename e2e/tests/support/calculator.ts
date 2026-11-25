@@ -11,6 +11,9 @@ const KEY_NAMES: Record<string, string> = {
   '(': 'open parenthesis',
   ')': 'close parenthesis',
   '.': 'decimal point',
+  '^': 'power',
+  '%': 'percent of',
+  '√': 'square root',
 }
 
 export const calculator = (page: Page) => {
